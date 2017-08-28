@@ -1,0 +1,4 @@
+---
+# UNIX user vars
+jenkins_user_home: /var/lib/jenkins
+jenkins_user_name: jenkins

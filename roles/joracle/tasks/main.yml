@@ -1,0 +1,73 @@
+---
+- name: Get latest Oracle JDK download page
+  uri:
+    url: "{{joracle_home_page}}"
+    return_content: yes
+  register: result
+  tags: [joracle]
+
+- name: Determine latest Oracle JDK download page and version
+  set_fact: latest_java_page_and_version="{{ (result.content.replace('\n','')|regex_replace('.*(/technetwork/java/javase/downloads/jdk(\d+)-downloads.*?.html).*', 'http://www.oracle.com/\1\n\2')).split('\n') }}"
+  tags: [joracle]
+
+- name: Define download page URL based on latest Oracle JDK version
+  set_fact: download_page_url="{{ latest_java_page_and_version[0] }}"
+  when: latest_java_page_and_version[1]|version_compare(joracle_version,'=')
+  tags: [joracle]
+  
+- name: Show download page URL
+  debug: msg="{{ download_page_url }}"
+  tags: [joracle]
+
+- name: Get lastest Oracle JDK RPM url
+  uri: url="{{ download_page_url }}" return_content=yes
+  register: result
+  tags: [joracle]
+
+- name: Set latest Oracle JDK RPM url
+  set_fact: oracle_java_rpm_url="{{ result.content|regex_search('https?://download.oracle.com/.*?/jdk-\w+-linux-' + oracle_java_ansible_arch_mappings[ansible_architecture] + '.rpm') }}"
+  tags: [joracle]
+
+- name: Set latest Oracle JDK versions
+  set_fact: oracle_java_rpm_filename="{{ oracle_java_rpm_url | basename }}"
+            joracle_version="{{ oracle_java_rpm_url | basename|regex_replace('jdk-(\d+)u(\d+)-linux.*','\1') }}"
+            joracle_version_update="{{ oracle_java_rpm_url | basename|regex_replace('jdk-(\d+)u(\d+)-linux.*','\2') }}"
+  tags: [joracle]
+
+- debug: msg="Downloading Orcale JDK {{ joracle_version }}u{{ joracle_version_update }} to {{ oracle_java_rpm_filename }} from {{ oracle_java_rpm_url }}"
+  tags: [joracle]
+
+- name: Download latest Oracle JDK RPM
+  get_url:
+    headers='Cookie:gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie'    dest="{{ joracle_dir_source }}/{{ oracle_java_rpm_filename }}"
+    url="{{ oracle_java_rpm_url }}"
+    validate_certs="{{ joracle_rpm_validate_certs }}"
+  register: oracle_java_task_rpm_download
+  become: yes
+  tags: [joracle]
+
+- name: Install latest Oracle JDK RPM
+  action: "{{ ansible_pkg_mgr }} name={{ joracle_dir_source }}/{{ oracle_java_rpm_filename }} state=present"
+  become: yes
+  when: not oracle_java_task_rpm_download|skipped
+  register: oracle_java_task_rpm_install
+  tags: [joracle]
+
+- name: Set Oracle Java as default in system
+  alternatives:
+    name="{{ item.exe }}"
+    link="/usr/bin/{{ item.exe }}"
+    path="{{ item.path }}/{{ item.exe }}"
+  with_items:
+    - { path: "{{ joracle_home_path }}/jre/bin", exe: 'java' }
+    - { path: "{{ joracle_home_path }}/jre/bin", exe: 'keytool' }
+    - { path: "{{ joracle_home_path }}/bin", exe: 'javac' }
+    - { path: "{{ joracle_home_path }}/bin", exe: 'javadoc' }
+  become: yes
+  when: joracle_set_default and oracle_java_task_rpm_install|changed
+  register: oracle_java_task_set_default
+  tags: [joracle]
+
+- name: Oracle Java should be default in system
+  debug: msg="{{ oracle_java_task_set_default }}"
+  tags: [joracle]

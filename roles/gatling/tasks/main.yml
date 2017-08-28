@@ -1,0 +1,51 @@
+---
+- name: Create temporary directory
+  tempfile:
+    state: directory
+    prefix: gatling
+  changed_when: false
+  register: gatling_dir_tmp
+  tags: [gatling, install]
+
+- name: Download Gatling bundle ZIP
+  get_url:
+    url: '{{gatling_bundle_download_url}}'
+    dest: '{{gatling_dir_tmp.path}}'
+  register: gatling_download
+  become_user: '{{current_user}}'
+  tags: [gatling, install]
+
+- name: Create Gatling installation directory
+  file: 
+    path: '{{gatling_installation_dir}}'
+    state: directory
+    owner: '{{current_user}}'
+  when: not gatling_download|skipped
+  become_user: root
+  tags: [gatling, install]
+
+- name: Extract Gatling bundle ZIP 
+  unarchive:
+    src: '{{gatling_dir_tmp.path}}/{{gatling_download_zip_file}}'
+    dest: '{{gatling_installation_dir}}'
+    owner: '{{current_user}}'
+    copy: no
+  when: not gatling_download|skipped
+  register: gatling_bundle_extract
+  tags: [gatling, install]
+
+- name: Sym link {{gatling_installation_dir}}
+  file: 
+    src: '{{gatling_installation_dir}}/{{gatling_bundle_installation_name}}'
+    dest: '{{gatling_installation_dir}}/latest'
+    state: link
+  when: not gatling_bundle_extract|skipped
+  tags: [gatling, install]
+
+- name: Cleanup temporary directory
+  file: 
+    name: '{{gatling_dir_tmp.path}}'
+    state: absent
+  changed_when: false
+  ignore_errors: '{{ansible_check_mode}}'
+  tags: [gatling, install]

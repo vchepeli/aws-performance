@@ -1,0 +1,16 @@
+---
+- include: install.yml
+  when: jmeter_enabled
+
+- include: config.yml
+  with_items: '{{jmeter_config_props}}'
+  loop_control:
+    loop_var: filename
+  when: jmeter_enabled
+  
+- include: plugins.yml
+  when: jmeter_enabled
+
+# - include: test.yml
+#   when: jmeter_enabled
+#   tags: [test]

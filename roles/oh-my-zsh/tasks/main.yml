@@ -1,0 +1,26 @@
+---
+- name: Install zsh packages
+  yum: 
+    name={{item}}
+    state=latest
+  become_user: root
+  tags: [oh-my-zsh]
+  with_items:
+    - zsh
+
+- name: Clone oh-my-zsh repo
+  git: 
+    repo=git://github.com/robbyrussell/oh-my-zsh.git 
+    dest=~/.oh-my-zsh
+  tags: [oh-my-zsh]
+
+- name: Create a new zsh config
+  command: cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc creates=~/.zshrc
+  ignore_errors: true
+
+- name: Set zsh as default shell
+  user: 
+    name="{{current_user}}"
+    shell=/usr/bin/zsh
+  become_user: root
+  tags: [oh-my-zsh]

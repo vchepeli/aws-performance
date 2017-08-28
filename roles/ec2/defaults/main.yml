@@ -1,0 +1,6 @@
+---
+region: eu-central-1
+instance_type: t2.large
+ec2_enabled: yes
+count: 4
+ec2_key_name: ec2-perf

@@ -1,0 +1,49 @@
+---
+- name: Launch EC2 instances
+  hosts: localhost
+  become: yes
+  become_user: "{{lookup('env','USER')}}"
+  vars:
+    current_user: "{{lookup('env','USER')}}"
+    # ami: ami-fa2df395
+  roles:
+    - ec2
+  tasks:
+    - name: include OS specific variables
+      include_vars: roles/jmeter/defaults/main.yml
+    - include: roles/jmeter/tasks/install.yml
+    - include: roles/jmeter/tasks/plugins.yml
+    - include: roles/jmeter/tasks/config.yml
+#ami-f9857396 minimal installation
+- name: Install Jenkins slave and connect
+  hosts: performance
+  gather_facts: true
+  roles:
+   - jenkins
+
+- name: Add EC2 instances to Jenkins master
+  hosts: localhost
+  become: yes
+  become_user: "{{lookup('env','USER')}}"
+  environment:
+    PYTHONHTTPSVERIFY: 0
+  vars:
+    current_user: "{{lookup('env','USER')}}"
+  vars_files: 
+    - secret.yml
+  roles:
+    - pjenkins
+
+- name: Install Performance Tooling
+  hosts: performance
+  # remote_user: '{{jenkins_user_name}}'
+  become: yes
+  become_user: '{{jenkins_user_name}}'
+  gather_facts: true
+  vars: 
+    current_user: '{{jenkins_user_name}}'
+    # current_user: "{{ lookup('env','USER') }}"
+  roles:
+    - role: oh-my-zsh
+    - role: jmeter
+    - role: gatling

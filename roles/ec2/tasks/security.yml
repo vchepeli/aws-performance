@@ -1,0 +1,34 @@
+---
+- name: JMeter security group
+  ec2_group:
+    name: jmeter
+    description: allow Remote Method Invocation (RMI) access
+    region: "{{ region }}"
+    rules:
+      - proto: tcp
+        from_port: 1099
+        to_port: 1099
+        cidr_ip: 0.0.0.0/0
+  tags: [ec2, security]
+
+- name: SSH security group
+  ec2_group:
+    name: ssh
+    description: allow ssh access
+    region: "{{ region }}"
+    rules:
+      - proto: tcp
+        from_port: 22
+        to_port: 22
+        cidr_ip: 0.0.0.0/0
+  tags: [ec2, security]
+
+- name: Outbound security group
+  ec2_group:
+    name: outbound
+    description: allow outbound connections to the internet
+    region: "{{ region }}"
+    rules_egress:
+      - proto: all
+        cidr_ip: 0.0.0.0/0
+  tags: [ec2, security]

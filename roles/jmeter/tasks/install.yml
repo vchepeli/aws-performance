@@ -1,0 +1,52 @@
+---
+- name: Create temporary directory
+  tempfile:
+    state: directory
+    prefix: jmeter
+  changed_when: false
+  register: jmeter_dir_tmp
+  tags: [jmeter, install]
+  
+- name: Download JMeter bundle ZIP
+  get_url:
+    url: '{{jmeter_download_bundle_url}}'
+    dest: '{{jmeter_dir_tmp.path}}/'
+  when: not jmeter_dir_tmp|skipped
+  register: jmeter_download
+  become_user: '{{current_user}}'
+  tags: [jmeter, install]
+
+- name: Create JMeter installation directory
+  file:
+    path: '{{jmeter_installation_dir}}'
+    state: directory
+    owner: '{{current_user}}'
+  when: not jmeter_download|skipped
+  become_user: root
+  tags: [jmeter, install]
+
+- name: Extract JMeter bundle ZIP
+  unarchive:
+    src: '{{jmeter_dir_tmp.path}}/{{jmeter_download_zip_file}}'
+    dest: '{{jmeter_installation_dir}}'
+    owner: '{{current_user}}'
+    copy: no
+  when: not jmeter_download|skipped
+  register: jmeter_bundle_extract
+  tags: [jmeter, install]
+
+- name: Sym link {{jmeter_installation_dir}} to JMeter latest
+  file: 
+    src: '{{jmeter_installation_dir}}/{{jmeter_download_file_name}}'
+    dest: '{{jmeter_installation_latest_dir}}'
+    state: link
+  when: not jmeter_bundle_extract|skipped
+  tags: [jmeter, install]
+
+- name: Cleanup temporary directory
+  file: 
+    name: '{{jmeter_dir_tmp.path}}'
+    state: absent
+  changed_when: false
+  ignore_errors: '{{ansible_check_mode}}'
+  tags: [jmeter, install]

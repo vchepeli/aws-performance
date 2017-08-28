@@ -1,0 +1,75 @@
+---
+- name: Ensure all RPM packages updated
+  yum: 
+    name: '*'
+    state: latest
+  become: yes
+  tags: [system]
+
+- name: Ensure RPM packages installed
+  yum:
+    pkg: '{{item}}'
+    state: latest
+  become: yes
+  tags: [system]
+  with_items:
+    - curl
+    - epel-release
+    - git
+    - mc
+    - ntp
+    - net-tools
+    - unzip
+    - vim
+    - wget
+    - zip
+
+- name: Ensure that {{ansible_cache_dir}} directory exists
+  file:
+    path: '{{ansible_cache_dir}}'
+    state: directory
+  become: yes
+  tags: [system]
+
+- name: Ensure the NTP service is running and enabled
+  service:
+    name: ntpd
+    state: started
+    enabled: True
+  become: yes
+
+- name: Ensure MOTD file is present and updated
+  template:
+    src: motd.j2
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  tags: [system]
+
+- name: Ensure hostname is the same of the inventory
+  hostname:
+    name: "{{inventory_hostname}}"
+  become: yes
+  tags: [system]
+
+- name: Set limits
+  lineinfile: dest=/etc/security/limits.conf line="{{item.key}}" regexp="{{item.value}}"
+  with_dict:
+    "*               soft    nofile          65536" : '\*\s+soft\s+nofile'
+    "*               hard    nofile          65536" : '\*\s+hard\s+nofile'
+    "root            soft    nofile          16384" : 'root\s+soft\s+nofile'
+    "root            hard    nofile          65536" : 'root\s+hard\s+nofile'
+  become: yes
+  changed_when: false
+  tags: [system]
+
+# - name: Create /etc/hosts file
+#   template: 
+#     src=hosts.j2
+#     dest=/etc/hosts
+#     owner=root
+#     group=root
+#   become: yes
+#   tags: [system]

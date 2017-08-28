@@ -1,0 +1,62 @@
+---
+jmeter_enabled: no
+jmeter_version: 3.2
+
+jmeter_download_binaries_url: "http://mirror.dkm.cz/apache/jmeter/binaries"
+jmeter_download_file_name: "apache-jmeter-{{jmeter_version}}"
+jmeter_download_zip_file: "{{jmeter_download_file_name}}.zip"
+jmeter_download_bundle_url: "{{jmeter_download_binaries_url}}/{{jmeter_download_zip_file}}"
+
+jmeter_installation_dir: "{{software_install_dir}}/jmeter"
+jmeter_installation_latest_dir: "{{jmeter_installation_dir}}/latest"
+jmeter_installation_latest_bin: "{{jmeter_installation_latest_dir}}/bin"
+jmeter_installation_latest_lib: "{{jmeter_installation_latest_dir}}/lib"
+jmeter_installation_latest_ext: "{{jmeter_installation_latest_lib}}/ext"
+
+jmeter_plugins_enabled: yes
+jmeter_plugins_manager_version: 0.15
+jmeter_plugins_manager_binaries_url: "https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager"
+jmeter_plugins_manager_file_name: "jmeter-plugins-manager-{{jmeter_plugins_manager_version}}"
+jmeter_plugins_manager_jar_file: "{{jmeter_plugins_manager_file_name}}.jar"
+jmeter_plugins_manager_bundle_url: "{{jmeter_plugins_manager_binaries_url}}/{{jmeter_plugins_manager_version}}/{{jmeter_plugins_manager_jar_file}}"
+
+cmdrunner_version: 2.0
+cmdrunner_binaries_url: "https://repo1.maven.org/maven2/kg/apc/cmdrunner"
+cmdrunner_name: "cmdrunner-{{cmdrunner_version}}"
+cmdrunner_jar: "{{cmdrunner_name}}.jar"
+cmdrunner_download_url: "{{cmdrunner_binaries_url}}/{{cmdrunner_version}}/{{cmdrunner_jar}}"
+#TODO change to list and then join
+jmeter_plugins_set: 
+  - jpgc-graphs-basic
+  - jpgc-perfmon
+  - jpgc-casutg
+  - jpgc-webdriver
+  - jpgc-dummy
+  - jpgc-fifo
+  - jpgc-functions
+  - jpgc-ffw
+  - jpgc-standard
+  - blazemeter-debugger
+  - jpgc-prmctl
+  - jpgc-tst
+
+jmeter_config_props:
+  jmeter:
+    - {key: log_level.jmeter, value: INFO}
+    - {key: log_level.jmeter.junit, value: DEBUG}
+    - {key: log_level.jorphan, value: INFO}
+    - {key: jmeter.reportgenerator.apdex_satisfied_threshold, value: 4000}
+    - {key: jmeter.reportgenerator.apdex_tolerated_threshold, value: 4000}
+    
+        # - jmeter.reportgenerator.apdex_satisfied_threshold=500
+    # - jmeter.reportgenerator.apdex_tolerated_threshold=1500
+# jmeter_test_plans: # TODO Create working folders for JMETER test plans
+#   - name: 'testplan'
+#     src_dir: ~/Work/Performance/WFM
+#     dest_dir: /home/ptester/JMeter
+#     jmx_file_name: 'wfm_portal.jmx'
+#     jtl_file_name: 'wfm_portal.jtl'
+#     duration: '300'
+#     threads: '50'
+#     host: '<HOST>'
+#     # files: {src: '/opt/tests/feeds.csv', dest: '/opt/tests/'} DIR

@@ -1,0 +1,22 @@
+---
+# UNIX user vars
+jenkins_user_home: /var/lib/jenkins
+jenkins_user_name: jenkins
+
+jenkins_admin_username: "{{vault_jenkins_username|default('admin')}}"
+jenkins_admin_password: "{{vault_jenkins_password|default('admin')}}"
+
+ssh_credentials_package: com.cloudbees.jenkins.plugins.sshcredentials.impl
+
+jenkins_master_url: "{{vault_jenkins_url|default('http://192.168.64.1:8080')}}"
+
+# Jenkins slave vars
+jenkins_slave_executors: 2
+jenkins_slave_description: 'EC2 Performance Testing Slave'
+# jenkins_slave_host: '{{ansible_eth0.ipv4.address}}'
+# jenkins_slave_name: '{{inventory_hostname}}'
+jenkins_slave_port: 22
+jenkins_slave_labels: >
+  ec2-perf
+  mobile
+jenkins_slave_credentials_id: master-ssh

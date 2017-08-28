@@ -1,0 +1,8 @@
+- name: Install python-jenkins
+  pip:
+    name: python-jenkins
+    state: latest
+  become: yes
+  tags: [pjenkins, install]
+
+- include: install.yml

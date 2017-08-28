@@ -1,0 +1,66 @@
+---
+# - name: Synchronize testplan files to remote hosts
+#   synchronize:
+#     src="{{item.src_dir}}/{{item.name}}"
+#     dest="{{item.dest_dir}}"
+#     delete=yes
+#     recursive=yes
+#   with_items: "{{jmeter_test_plans}}"
+
+- name: Delete logs directory
+  local_action: file
+  args:   
+    path: "{{item.dest_dir}}/{{item.name}}/logs"
+    state: "absent"
+  with_items: "{{jmeter_test_plans}}"  
+  tags: [jmeter, test]
+
+- name: Delete reports directory
+  local_action: file
+  args:   
+    path: "{{item.dest_dir}}/{{item.name}}/reports"
+    state: "absent"
+  with_items: "{{jmeter_test_plans}}"  
+  tags: [jmeter, test]
+
+- name: Create logs directory
+  local_action: file
+  args:
+    path: "{{item.dest_dir}}/{{item.name}}/logs"
+    state: "directory"
+  with_items: "{{jmeter_test_plans}}"
+  tags: [jmeter, test]
+
+- name: Create reports directory
+  local_action: file
+  args:
+    path: "{{item.dest_dir}}/{{item.name}}/reports"
+    state: "directory"
+  with_items: "{{jmeter_test_plans}}"
+  tags: [jmeter, test]
+
+- name: Start JMeter servers
+  command: > 
+    "bin/jmeter-server"
+    "-Djava.rmi.server.hostname={{ansible_eth0.ipv4.address}}"
+  args: 
+    chdir: "{{jmeter_installation_latest_dir}}"
+  async: 100
+  poll: 0
+  ignore_errors: true
+  tags: [jmeter, test]
+
+- name: Start testplan
+  local_action: shell
+    "bin/jmeter -Djava.rmi.server.hostname={{ansible_eth0.ipv4.address}}
+    "-n -t {{item.src_dir}}/{{item.name}}/{{item.jmx_file_name}}"
+    "-Ghost={{item.host}} -Gusers={{item.threads}} -Gduration={{item.duration}}"
+    "-R{{groups['pslaves']|join(',')}}"
+    "-X -l {{item.dest_dir}}/{{item.name}}/logs/{{item.jtl_file_name}}"
+    "-e -o {{item.dest_dir}}/{{item.name}}/reports && sleep 10"
+  args:
+    chdir: "{{jmeter_installation_latest_dir}}"
+  with_items: "{{jmeter_test_plans}}"
+  tags: [jmeter, test]
+
+#{{hostvars[inventory_hostname]['ansible_eth0']['ipv4']['address']}}"

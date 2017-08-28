@@ -1,0 +1,52 @@
+#!/usr/bin/python --no-check-certificate
+from functools import partial
+from ansible.module_utils.basic import *
+import jenkins
+
+def _jenkins_api(jenkins_url=None, username=None, password=None, command=None, args=None, kwargs=None):
+
+    result = {
+        'cmd': '{} {} {}'.format(jenkins_url, args, kwargs),
+        'changed': False,
+        'failed': True,
+        'msg': '',
+        'rc': 1
+    }    
+    server = jenkins.Jenkins(jenkins_url, username=username, password=password)
+
+    if not hasattr(server, command):
+        result['msg'] = 'Unknown command: {}'.format(command)
+        return result
+    
+    cmd = partial(getattr(server, command))
+    if args:
+        cmd = partial(cmd, *args)
+    if kwargs:
+        cmd = partial(cmd, **kwargs)
+    try:
+        result[command] = cmd()
+    except jenkins.JenkinsException as e:
+        result['msg'] = e.message
+        return result
+
+    result['changed'] = True
+    result['failed'] = False
+    result['rc'] = 0
+
+    return result
+
+
+if __name__ == '__main__':
+    global module
+    module = AnsibleModule(
+        argument_spec={
+            'jenkins_url': {'required': True},
+            'username': {'required': True},
+            'password': {'required': True},
+            'command': {'required': True},
+            'args': {'required': False, 'type': 'list'},
+            'kwargs': {'required': False, 'type': 'dict'},
+        },
+        supports_check_mode=False
+    )
+    module.exit_json(**_jenkins_api(**module.params))

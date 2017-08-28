@@ -1,0 +1,7 @@
+---
+joracle_dir_source: '/usr/local/src'
+joracle_set_default: yes
+joracle_version: 8
+joracle_version_string: "1.{{ joracle_version }}.0_{{ joracle_version_update }}"
+joracle_home_path: "/usr/java/latest"
+joracle_rpm_validate_certs: yes
