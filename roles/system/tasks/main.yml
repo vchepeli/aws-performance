@@ -8,7 +8,7 @@
 
 - name: Ensure RPM packages installed
   yum:
-    pkg: '{{item}}'
+    pkg: '{{ item }}'
     state: latest
   become: yes
   tags: [system]
@@ -26,7 +26,7 @@
 
 - name: Ensure that {{ansible_cache_dir}} directory exists
   file:
-    path: '{{ansible_cache_dir}}'
+    path: '{{ ansible_cache_dir }}'
     state: directory
   become: yes
   tags: [system]
@@ -50,12 +50,12 @@
 
 - name: Ensure hostname is the same of the inventory
   hostname:
-    name: "{{inventory_hostname}}"
+    name: '{{ inventory_hostname }}'
   become: yes
   tags: [system]
 
 - name: Set limits
-  lineinfile: dest=/etc/security/limits.conf line="{{item.key}}" regexp="{{item.value}}"
+  lineinfile: dest=/etc/security/limits.conf line='{{ item.key }}' regexp='{{ item.value }}'
   with_dict:
     "*               soft    nofile          65536" : '\*\s+soft\s+nofile'
     "*               hard    nofile          65536" : '\*\s+hard\s+nofile'

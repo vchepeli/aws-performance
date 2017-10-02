@@ -10,7 +10,3 @@
   
 - include: plugins.yml
   when: jmeter_enabled
-
-# - include: test.yml
-#   when: jmeter_enabled
-#   tags: [test]

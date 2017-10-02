@@ -6,7 +6,7 @@
 {% for group in groups %}
 {% if groups[group] and group != 'all' %}
 {% for host in groups[group] %}
-{{hostvars[host].ansible_default_ipv4.address}} {{ ansible_hostname }}
+{{hostvars[host]}} {{ ansible_hostname }}
 {% endfor %}
 
 {% endif %}

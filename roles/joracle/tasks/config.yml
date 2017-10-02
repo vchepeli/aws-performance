@@ -1,0 +1,19 @@
+---
+- name: Set Oracle Java as default in system
+  alternatives:
+    name="{{ item.exe }}"
+    link="/usr/bin/{{ item.exe }}"
+    path="{{ item.path }}/{{ item.exe }}"
+  with_items:
+    - { path: "{{ joracle_home_path }}/jre/bin", exe: 'java' }
+    - { path: "{{ joracle_home_path }}/jre/bin", exe: 'keytool' }
+    - { path: "{{ joracle_home_path }}/bin", exe: 'javac' }
+    - { path: "{{ joracle_home_path }}/bin", exe: 'javadoc' }
+  become: yes
+  when: joracle_set_default and oracle_java_task_rpm_install|changed
+  register: oracle_java_task_set_default
+  tags: [joracle, config]
+
+- name: Oracle Java should be default in system
+  debug: msg="{{ oracle_java_task_set_default }}"
+  tags: [joracle, install]

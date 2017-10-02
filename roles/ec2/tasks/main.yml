@@ -9,9 +9,9 @@
 
 - name: EC2 keypair
   ec2_key:
-    name: '{{ec2_key_name}}'
-    key_material: '{{item}}'
-    region: '{{region}}'
+    name: '{{ ec2_key_name }}'
+    key_material: '{{ item }}'
+    region: '{{ ec2_region }}'
   with_file: ~/.ssh/ec2.centos.pub
   tags: [ec2, keypair]
   when: ec2_enabled

@@ -1,4 +1,5 @@
 ---
+joracle_enabled: yes
 joracle_dir_source: '/usr/local/src'
 joracle_set_default: yes
 joracle_version: 8

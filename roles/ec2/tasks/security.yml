@@ -3,7 +3,7 @@
   ec2_group:
     name: jmeter
     description: allow Remote Method Invocation (RMI) access
-    region: "{{ region }}"
+    region: "{{ ec2_region }}"
     rules:
       - proto: tcp
         from_port: 1099
@@ -15,7 +15,7 @@
   ec2_group:
     name: ssh
     description: allow ssh access
-    region: "{{ region }}"
+    region: "{{ ec2_region }}"
     rules:
       - proto: tcp
         from_port: 22
@@ -27,7 +27,7 @@
   ec2_group:
     name: outbound
     description: allow outbound connections to the internet
-    region: "{{ region }}"
+    region: "{{ ec2_region }}"
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0

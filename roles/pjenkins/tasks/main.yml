@@ -5,4 +5,4 @@
   become: yes
   tags: [pjenkins, install]
 
-- include: install.yml
+- include: config.yml
