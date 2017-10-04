@@ -13,6 +13,7 @@
     - include: roles/jmeter/tasks/install.yml
     - include: roles/jmeter/tasks/plugins.yml
     - include: roles/jmeter/tasks/config.yml
+
 - name: Install Jenkins slave and connect
   hosts: performance
   gather_facts: true

@@ -49,4 +49,13 @@
     state: absent
   changed_when: false
   ignore_errors: '{{ ansible_check_mode }}'
+  become_user: root
+  tags: [jmeter, install]
+
+- name: Sym link jmeter.sh
+  file:
+    src: '{{ jmeter_installation_dir }}/latest/bin/jmeter.sh'
+    dest: '{{ user_binaries }}/jmeter'
+    state: link
+  become_user: root
   tags: [jmeter, install]
