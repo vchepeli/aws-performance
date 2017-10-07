@@ -44,3 +44,4 @@
     - role: oh-my-zsh
     - role: jmeter
     - role: gatling
+    - role: maven

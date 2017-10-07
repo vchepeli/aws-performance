@@ -1,4 +1,0 @@
-[performance]
-
-[local]
-my  ansible_host=127.0.0.1 ansible_user=<your-local-username> ansible_connection=local

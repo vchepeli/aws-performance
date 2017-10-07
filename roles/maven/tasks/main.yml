@@ -1,0 +1,60 @@
+---
+- name: Create temporary directory
+  tempfile:
+    state: directory
+    prefix: maven
+  changed_when: false
+  register: maven_dir_tmp
+  tags: [maven, install]
+
+- name: Download Maven bundle ZIP
+  get_url:
+    url: '{{ maven_bundle_download_url }}'
+    dest: '{{ maven_dir_tmp.path }}'
+  register: maven_download
+  become_user: '{{ current_user }}'
+  tags: [maven, install]
+
+- name: Create MVN installation directory
+  file: 
+    path: '{{ maven_installation_dir }}'
+    state: directory
+    owner: '{{ current_user }}'
+  when: not maven_download|skipped
+  become_user: root
+  tags: [maven, install]
+
+- name: Extract MVN bundle ZIP 
+  unarchive:
+    src: '{{ maven_dir_tmp.path }}/{{ maven_download_zip_file }}'
+    dest: '{{ maven_installation_dir }}'
+    owner: '{{ current_user }}'
+    copy: no
+  when: not maven_download|skipped
+  register: maven_bundle_extract
+  tags: [maven, install]
+
+- name: Sym link {{ maven_installation_dir }}
+  file:
+    src: '{{ maven_installation_dir }}/{{ maven_bundle_installation_name }}'
+    dest: '{{ maven_installation_dir }}/latest'
+    state: link
+  when: not maven_bundle_extract|skipped
+  tags: [maven, install]
+
+- name: Cleanup temporary directory
+  file:
+    name: '{{ maven_dir_tmp.path }}'
+    state: absent
+  changed_when: false
+  ignore_errors: '{{ ansible_check_mode }}'
+  tags: [maven, install]
+
+- name: Sym link mvn
+  file:
+    src: '{{ maven_installation_dir }}/latest/bin/mvn'
+    dest: '{{ user_binaries }}/mvn'
+    state: link
+  become_user: root
+  tags: [maven, install]
+

@@ -16,8 +16,10 @@
   tags: [ec2, keypair]
   when: ec2_enabled
 
-- include: security.yml
+- include: security-group.yml
+  tags: [ec2, security]
   when: ec2_enabled
 
-- include: start.yml
+- include: start-vms.yml
+  tags: [ec2, security]
   when: ec2_enabled

@@ -9,7 +9,6 @@
         from_port: 1099
         to_port: 1099
         cidr_ip: 0.0.0.0/0
-  tags: [ec2, security]
 
 - name: SSH security group
   ec2_group:
@@ -21,7 +20,6 @@
         from_port: 22
         to_port: 22
         cidr_ip: 0.0.0.0/0
-  tags: [ec2, security]
 
 - name: Outbound security group
   ec2_group:
@@ -31,4 +29,3 @@
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0
-  tags: [ec2, security]

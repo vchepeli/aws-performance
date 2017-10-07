@@ -11,7 +11,7 @@
   register: centos_ami_find
   tags: [ec2, find-vmi]
 
-- name: Start the instances
+- name: Start Centos instances
   ec2:
     region: '{{ ec2_region }}'
     image: '{{ centos_ami_find.results[0].ami_id }}'
@@ -25,7 +25,7 @@
   register: ec2
   tags: [ec2, start-vms]
 
-- name: Add instances to group
+- name: Add Centos instances to group
   add_host:
     hostname: '{{ item.public_dns_name }}'
     groups: performance
