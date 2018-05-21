@@ -7,6 +7,4 @@ user_binaries: /usr/local/bin
 ec2_enabled: yes
 jmeter_enabled: yes
 
-ec2_user_name: centos
-jenkins_user_name: jenkins
 debug: yes

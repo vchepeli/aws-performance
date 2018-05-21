@@ -3,11 +3,12 @@
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 
-{% for group in groups %}
-{% if groups[group] and group != 'all' %}
-{% for host in groups[group] %}
-{{hostvars[host]}} {{ ansible_hostname }}
-{% endfor %}
+#TODO Add other hosts
+#{% for group in groups %}
+#{% if groups[group] and group != 'all' %}
+#{% for host in groups[group] %}
+#{{ hostvars[host] }} {{ ansible_hostname }}
+#{% endfor %}
 
-{% endif %}
-{% endfor %}
+#{% endif %}
+#{% endfor %}

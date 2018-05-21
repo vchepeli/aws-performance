@@ -1,5 +1,5 @@
 ---
-- name: JMeter security group
+- name: 'JMeter security group'
   ec2_group:
     name: jmeter
     description: allow Remote Method Invocation (RMI) access
@@ -10,7 +10,7 @@
         to_port: 1099
         cidr_ip: 0.0.0.0/0
 
-- name: SSH security group
+- name: 'SSH security group'
   ec2_group:
     name: ssh
     description: allow ssh access
@@ -21,7 +21,7 @@
         to_port: 22
         cidr_ip: 0.0.0.0/0
 
-- name: Outbound security group
+- name: 'Outbound security group'
   ec2_group:
     name: outbound
     description: allow outbound connections to the internet

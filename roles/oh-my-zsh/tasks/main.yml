@@ -16,7 +16,7 @@
 
 - name: Create a new zsh config
   command: cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc creates=~/.zshrc
-  changed_when: false
+  changed_when: False
   ignore_errors: '{{ ansible_check_mode }}'
   tags: [oh-my-zsh, config]
 

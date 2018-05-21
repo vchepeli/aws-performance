@@ -1,8 +1,9 @@
 ---
 gatling_enabled: yes
-gatling_bundle_version: 2.2.5
-gatling_bundle_maven_repo: https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle
-gatling_bundle_installation_name: gatling-charts-highcharts-bundle-{{gatling_bundle_version}}
-gatling_download_zip_file: "{{gatling_bundle_installation_name}}-bundle.zip"
-gatling_bundle_download_url: "{{gatling_bundle_maven_repo}}/{{gatling_bundle_version}}/{{gatling_download_zip_file}}"
-gatling_installation_dir: "{{software_install_dir}}/gatling"
+software_name: 'gatling'
+bundle:
+  name: 'gatling-charts-highcharts-bundle'
+  version: 2.2.5
+  mirror: 'https://repo1.maven.org/maven2/io/gatling/highcharts'
+  suffix: '-bundle'
+  url_skip_name: False

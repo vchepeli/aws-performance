@@ -1,5 +1,5 @@
 ---
 joracle_home_page: http://www.oracle.com/technetwork/java/javase/downloads/index.html
-oracle_java_ansible_arch_mappings:
+joracle_ansible_arch_mappings:
   x86_64: x64
   i386: i586

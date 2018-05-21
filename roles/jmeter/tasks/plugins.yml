@@ -1,70 +1,70 @@
 ---
-- name: Download JMeter plugins manager JAR
+- name: 'Download JMeter plugins manager JAR'
   get_url:
-    url="{{ jmeter_plugins_manager_bundle_url }}"
-    dest="{{ jmeter_installation_latest_ext }}"
+    url: '{{ jmeter_plugins_manager_bundle_url }}'
+    dest: '{{ jmeter_installation_default_ext }}'
   when: jmeter_plugins_enabled
   register: jmeter_plugins_manager_download
   tags: [jmeter, plugins]
 
-- name: Generate PluginsManagerCMD.{sh,bat} in {{ jmeter_installation_latest_bin }}
+- name: 'Generate PluginsManagerCMD.{sh,bat} in {{ jmeter_installation_default_bin }}'
   command: >
     java -cp lib/ext/{{ jmeter_plugins_manager_jar_file }}
     org.jmeterplugins.repository.PluginManagerCMDInstaller
   args: 
-    chdir: "{{ jmeter_installation_latest_dir }}"
+    chdir: '{{ jmeter_installation_default_dir }}'
   changed_when: jmeter_plugins_manager_download|changed
   ignore_errors: '{{ ansible_check_mode }}'
   tags: [jmeter, plugins]
 
-- name: Check PluginsManagerCMD.{sh,bat} located in {{ jmeter_installation_latest_bin }}
+- name: 'Check PluginsManagerCMD.{sh,bat} located in {{ jmeter_installation_default_bin }}'
   stat:
-    path="{{ jmeter_installation_latest_bin }}/PluginsManagerCMD.sh"
+    path: '{{ jmeter_installation_default_bin }}/PluginsManagerCMD.sh'
   when: jmeter_plugins_enabled
   register: plugins_manager_cmd
   tags: [jmeter, plugins]
 
-- name: Fail when PluginsManagerCMD.{sh,bat} not located in {{ jmeter_installation_latest_bin }}
+- name: 'Fail when PluginsManagerCMD.{sh,bat} not located in {{ jmeter_installation_default_bin }}'
   fail: 
-    msg="Whoops! PluginsManagerCMD.{sh,bat} do not exist"
+    msg: 'Whoops! PluginsManagerCMD.{sh,bat} do not exist'
   when: jmeter_plugins_enabled and not plugins_manager_cmd.stat.exists
   tags: [jmeter, plugins]
 
-- name: Download CmdRunner library
+- name: 'Download CmdRunner library'
   get_url:
-    url="{{ cmdrunner_download_url }}"
-    dest="{{ jmeter_installation_latest_lib }}"
+    url: '{{ cmdrunner_download_url }}'
+    dest: '{{ jmeter_installation_default_lib }}'
   when: jmeter_plugins_enabled
   register: cmdrunner_download
   tags: [jmeter, plugins]
 
-- name: Find all installed JMeter plugins
+- name: 'Find all installed JMeter plugins'
   find:
-    paths="{{ jmeter_installation_latest_ext }}"
+    paths: '{{ jmeter_installation_default_ext }}'
     patterns="^jmeter-.*?\\.(?:jar)$"
-    use_regex=True
+    use_regex: True
   register: jmeter_installed_plugins
   tags: [jmeter, plugins]
 
-- name: Install JMeter plugins
-  command: "bin/PluginsManagerCMD.sh install {{ jmeter_plugins_set|join(',') }}"
+- name: 'Install JMeter plugins'
+  command: 'bin/PluginsManagerCMD.sh install {{ jmeter_plugins_set|join(",") }}'
   args: 
-    chdir: "{{ jmeter_installation_latest_dir }}"
+    chdir: '{{ jmeter_installation_default_dir }}'
   async: 100
   changed_when: jmeter_installed_plugins and jmeter_installed_plugins.matched|int == 1
   ignore_errors: '{{ ansible_check_mode }}'
   tags: [jmeter, plugins]
 
-- name: Find all installed JMeter plugins
+- name: 'Find all installed JMeter plugins'
   find:
-    paths="{{ jmeter_installation_latest_ext }}"
+    paths: '{{ jmeter_installation_default_ext }}'
     patterns="^jmeter-.*?\\.(?:jar)$"
-    use_regex=True
+    use_regex: True
   register: jmeter_installed_plugins
   tags: [jmeter, plugins]
 
-- name: Fail when JMeter plugins were not installed
+- name: 'Fail when JMeter plugins were not installed'
   fail:
-    msg="Whoops! Plugins do not exist in {{ jmeter_installation_latest_ext }}"
+    msg: 'Whoops! Plugins do not exist in {{ jmeter_installation_default_ext }}'
   when: jmeter_installed_plugins and not jmeter_installed_plugins.matched|int > 1
   tags: [jmeter, plugins]

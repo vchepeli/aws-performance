@@ -1,0 +1,31 @@
+---
+# required vars
+required_vars:
+  - software_name
+  - bundle
+
+# private_vars:
+_bundle_platform:
+_bundle_archive_ext: '.zip'
+_bundle_archive_extra_opts:
+
+_bundle_file_name: '{{ bundle.name }}-{{ bundle.version }}{{ bundle.sha|default("") }}{{ _bundle_platform }}{{ bundle.suffix|default("") }}'
+_bundle_archive: '{{ _bundle_file_name }}{{ _bundle_archive_ext }}'
+_bundle_unzip_strip_top: '{{ bundle.unzip_strip_top|default(True) }}'
+_bundle_exec_path_default: 'bin/{{ software_name }}.sh'
+_bundle_exec_path: '{{ bundle.exec_path|default(_bundle_exec_path_default) }}'
+
+_bundle_url_path_name: '/{{ bundle.name }}'
+_bundle_url_path_ver: '/{{ bundle.version }}'
+_bundle_url_path_binaries: '/binaries'
+_bundle_url_skip_ver: '{{ bundle.url_skip_ver|default(False) }}'
+_bundle_url_skip_name: '{{ bundle.url_skip_name|default(True) }}'
+_bundle_url_skip_binaries: '{{ bundle.url_skip_binaries|default(True) }}'
+_bundle_url_full: '{{ bundle.mirror }}{{ _bundle_url_skip_name|ternary("",_bundle_url_path_name) }}{{ _bundle_url_skip_ver|ternary("",_bundle_url_path_ver) }}{{ _bundle_url_skip_binaries|ternary("",_bundle_url_path_binaries) }}/{{ _bundle_archive }}'
+
+_bundle_install_dir: '{{software_install_dir}}/{{ software_name }}'
+_bundle_install_dir_ver: '{{ _bundle_install_dir }}/v{{ bundle.version }}'
+_bundle_install_dir_parent: '{{ _bundle_unzip_strip_top|ternary(_bundle_install_dir,_bundle_install_dir_ver)}}'
+_bundle_install_dir_creates: '{{ _bundle_install_dir_parent }}/{{ bundle.name }}-{{ bundle.version }}'
+_bundle_install_dir_bin: '{{ _bundle_install_dir_parent }}/bin'
+_bundle_install_dir_default: '{{ _bundle_install_dir }}/default'

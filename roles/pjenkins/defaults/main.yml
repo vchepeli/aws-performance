@@ -1,7 +1,7 @@
 ---
 # UNIX user vars
-jenkins_user_home: /var/lib/jenkins
-jenkins_user_name: jenkins
+jenkins.user.home: /var/lib/jenkins
+jenkins.user.name: jenkins
 # Jenkins master credentials
 jenkins_admin_username: "{{ vault_jenkins_username|default('admin') }}"
 jenkins_admin_password: "{{ vault_jenkins_password|default('admin') }}"

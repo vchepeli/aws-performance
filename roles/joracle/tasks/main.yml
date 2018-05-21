@@ -1,9 +1,19 @@
 ---
-- include: download.yml
-  when: joracle_enabled
+- when: joracle_enabled
+  block:
+  - include_tasks: 'download.yml'
+    tags: [joracle, download]
 
-- include: install.yml
-  when: joracle_enabled
+  - include_tasks: 'install.yml'
+    tags: [joracle, install]
 
-- include: config.yml
-  when: joracle_enabled
+  - include_tasks: 'config.yml'
+    tags: [joracle, config]
+
+#TODO
+#- name: Checking installed version of {{ software_name | upper }} client
+#  shell: test "$(oc version | head -n1 | awk '{print $2}' 2> /dev/null)" = v{{ bundle.version }}+{{ bundle_sha }}
+#  ignore_errors: yes
+#  register: wanted_version_installed
+#  failed_when: wanted_version_installed.rc > 0
+#  tags: [oc, postcheck]

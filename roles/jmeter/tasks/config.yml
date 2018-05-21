@@ -1,9 +1,8 @@
 ---
-- name: Insert/Update JMeter properties using a template file
+- name: 'Insert/Update JMeter properties using a template file'
   lineinfile:
-    path: '{{ jmeter_installation_latest_bin }}/{{ filename }}.properties'
+    path: '{{ jmeter_installation_default_bin }}/{{ filename }}.properties'
     regexp: '^{{ item.key }}='
     line: '{{ item.key }}={{ item.value }}'
   with_items: '{{ jmeter_config_props[filename] }}'
   when: filename|default(None) != None
-  tags: [jmeter, config]

@@ -1,8 +1,10 @@
 ---
 maven_enabled: yes
-maven_bundle_version: 3.5.0
-maven_bundle_apache_repo: https://archive.apache.org/dist/maven/maven-3
-maven_bundle_installation_name: apache-maven-{{maven_bundle_version}}
-maven_download_zip_file: "{{maven_bundle_installation_name}}-bin.zip"
-maven_bundle_download_url: "{{maven_bundle_apache_repo}}/{{maven_bundle_version}}/binaries/{{maven_download_zip_file}}"
-maven_installation_dir: "{{software_install_dir}}/maven"
+software_name: 'mvn'
+bundle:
+  name: 'apache-maven'
+  version: 3.5.0
+  mirror: 'https://archive.apache.org/dist/maven/maven-3'
+  suffix: '-bin'
+  url_skip_binaries: False
+  exec_path: 'bin/mvn'

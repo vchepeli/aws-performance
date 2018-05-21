@@ -1,14 +1,17 @@
 ---
-- include: user.yml
+- include_tasks: user.yml
+  tags: [jenkins, user]
 
-- name: Ensure correct java version selected
+- name: 'Ensure correct java version selected'
   alternatives:
     name: java
     path: /usr/java/latest/jre/bin/java
   tags: [jenkins, config]
 
-- name: Set nproc limits for Jenkins
-  lineinfile: dest="/etc/security/limits.d/20-nproc.conf" line='jenkins    soft    nproc    unlimited'
+- name: 'Set nproc limits for Jenkins'
+  lineinfile:
+    dest: "/etc/security/limits.d/20-nproc.conf"
+    line: 'jenkins    soft    nproc    unlimited'
+  changed_when: False
   become: yes
-  changed_when: false
   tags: [jenkins, config]

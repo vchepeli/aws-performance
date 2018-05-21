@@ -1,12 +1,31 @@
 ---
-- include: install.yml
-  when: jmeter_enabled
+- name: 'Resolve platform specific vars'
+  include_vars: '{{item}}'
+  with_first_found:
+    - files:
+        - '{{ansible_distribution}}-{{ansible_distribution_release}}.yml'
+        - '{{ansible_distribution}}.yml'
+        - '{{ansible_os_family}}.yml'
+      skip: true
+      paths:
+        - '{{role_path}}/vars'
+  tags: [jmeter, vars]
 
-- include: config.yml
-  with_items: '{{jmeter_config_props}}'
-  loop_control:
-    loop_var: filename
-  when: jmeter_enabled
-  
-- include: plugins.yml
-  when: jmeter_enabled
+- when: jmeter_enabled
+  block:
+  - include_tasks: 'install.yml'
+    tags: [jmeter, install]
+
+  - include_tasks: 'plugins.yml'
+    tags: [jmeter, plugins]
+
+  - include_tasks: 'config.yml'
+    tags: [jmeter, config]
+
+#TODO
+#- name: Checking installed version of {{ software_name | upper }} client
+#  shell: test "$(oc version | head -n1 | awk '{print $2}' 2> /dev/null)" = v{{ bundle.version }}+{{ bundle_sha }}
+#  ignore_errors: yes
+#  register: wanted_version_installed
+#  failed_when: wanted_version_installed.rc > 0
+#  tags: [oc, postcheck]

@@ -9,7 +9,7 @@
       cls: '{{ ssh_credentials_package }}.BasicSSHUserPrivateKey'
       keyCls: '{{ ssh_credentials_package }}.BasicSSHUserPrivateKey.DirectEntryPrivateKeySource'
       keyFile: '{{ item }}'
-      userName: '{{ jenkins_user_name }}'
+      userName: '{{ jenkins.user.name }}'
       passphrase: ''
       description: 'EC2 Performance VMs'
   with_file: ~/.ssh/ec2.jenkins
@@ -60,12 +60,12 @@
     kwargs:
       numExecutors: '{{ jenkins_slave_executors }}'
       nodeDescription: '{{ jenkins_slave_description }}'
-      remoteFS: '{{ jenkins_user_home }}'
+      remoteFS: '{{ jenkins.user.home }}'
       labels: '{{ jenkins_slave_labels }}'
       launcher: 'hudson.plugins.sshslaves.SSHLauncher'
       launcher_params:
         port: '{{ jenkins_slave_port }}'
-        username: '{{ jenkins_user_name }}'
+        username: '{{ jenkins.user.name }}'
         credentialsId: '{{ jenkins_slave_credentials_id }}'
         host: '{{ slave.item.public_dns_name }}'
   when:

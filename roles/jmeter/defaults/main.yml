@@ -1,31 +1,20 @@
 ---
-jmeter_enabled: no
-jmeter_version: 3.3
-
-jmeter_download_binaries_url: "http://mirror.dkm.cz/apache/jmeter/binaries"
-jmeter_download_file_name: "apache-jmeter-{{ jmeter_version }}"
-jmeter_download_zip_file: "{{ jmeter_download_file_name }}.zip"
-jmeter_download_bundle_url: "{{ jmeter_download_binaries_url }}/{{ jmeter_download_zip_file }}"
-
-jmeter_installation_dir: "{{ software_install_dir }}/jmeter"
-jmeter_installation_latest_dir: "{{ jmeter_installation_dir }}/latest"
-jmeter_installation_latest_bin: "{{ jmeter_installation_latest_dir }}/bin"
-jmeter_installation_latest_lib: "{{ jmeter_installation_latest_dir }}/lib"
-jmeter_installation_latest_ext: "{{ jmeter_installation_latest_lib }}/ext"
+jmeter_enabled: yes
+software_name: 'jmeter'
+bundle:
+  name: 'apache-jmeter'
+  version: 3.3
+  mirror: 'https://archive.apache.org/dist/jmeter'
+  url_skip_ver: True
+  url_skip_binaries: False
 
 jmeter_plugins_enabled: yes
 jmeter_plugins_manager_version: 0.15
 jmeter_plugins_manager_binaries_url: "https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager"
-jmeter_plugins_manager_file_name: "jmeter-plugins-manager-{{ jmeter_plugins_manager_version }}"
-jmeter_plugins_manager_jar_file: "{{ jmeter_plugins_manager_file_name }}.jar"
-jmeter_plugins_manager_bundle_url: "{{ jmeter_plugins_manager_binaries_url }}/{{ jmeter_plugins_manager_version }}/{{ jmeter_plugins_manager_jar_file }}"
 
 cmdrunner_version: 2.0
 cmdrunner_binaries_url: "https://repo1.maven.org/maven2/kg/apc/cmdrunner"
-cmdrunner_name: "cmdrunner-{{ cmdrunner_version }}"
-cmdrunner_jar: "{{ cmdrunner_name }}.jar"
-cmdrunner_download_url: "{{ cmdrunner_binaries_url }}/{{ cmdrunner_version }}/{{ cmdrunner_jar }}"
-jmeter_plugins_set: 
+jmeter_plugins_set:
   - jpgc-graphs-basic
   - jpgc-perfmon
   - jpgc-casutg

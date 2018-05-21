@@ -1,0 +1,4 @@
+---
+_bundle_platform: 'mac'
+_bundle_archive_ext: '.zip'
+_bundle_archive_extra_opts:

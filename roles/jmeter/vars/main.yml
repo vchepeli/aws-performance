@@ -1,0 +1,13 @@
+---
+jmeter_installation_default_dir: '{{ software_install_dir}}/{{ software_name }}/default'
+jmeter_installation_default_bin: "{{ jmeter_installation_default_dir }}/bin"
+jmeter_installation_default_lib: "{{ jmeter_installation_default_dir }}/lib"
+jmeter_installation_default_ext: "{{ jmeter_installation_default_lib }}/ext"
+
+jmeter_plugins_manager_file_name: "jmeter-plugins-manager-{{ jmeter_plugins_manager_version }}"
+jmeter_plugins_manager_jar_file: "{{ jmeter_plugins_manager_file_name }}.jar"
+jmeter_plugins_manager_bundle_url: "{{ jmeter_plugins_manager_binaries_url }}/{{ jmeter_plugins_manager_version }}/{{ jmeter_plugins_manager_jar_file }}"
+
+cmdrunner_name: "cmdrunner-{{ cmdrunner_version }}"
+cmdrunner_jar: "{{ cmdrunner_name }}.jar"
+cmdrunner_download_url: "{{ cmdrunner_binaries_url }}/{{ cmdrunner_version }}/{{ cmdrunner_jar }}"

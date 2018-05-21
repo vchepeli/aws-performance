@@ -1,5 +1,5 @@
 ---
-- name: Get the Centos EBS SSD AMI
+- name: 'Get the Centos EBS SSD AMI'
   ec2_ami_find:
     architecture: x86_64
     name: 'CentOS Linux 7*EBS*'
@@ -9,9 +9,8 @@
     sort_end: 1
     no_result_action: fail
   register: centos_ami_find
-  tags: [ec2, find-vmi]
 
-- name: Start Centos instances
+- name: 'Start Centos instances'
   ec2:
     region: '{{ ec2_region }}'
     image: '{{ centos_ami_find.results[0].ami_id }}'
@@ -23,21 +22,18 @@
     count_tag: {type: performance}
     wait: yes
   register: ec2
-  tags: [ec2, start-vms]
 
-- name: Add Centos instances to group
+- name: 'Add Centos instances to group'
   add_host:
     hostname: '{{ item.public_dns_name }}'
     groups: performance
   with_items: '{{ ec2.tagged_instances }}'
   when: item.public_dns_name is defined
-  tags: [ec2, group-vms]
 
-- name: Wait for SSH server to be running
+- name: 'Wait for SSH server to be running'
   wait_for:
     host: '{{ item.public_dns_name }}'
     port: 22
     search_regex: OpenSSH
   with_items: '{{ ec2.tagged_instances }}'
   when: item.public_dns_name is defined
-  tags: [ec2, wait-vms]
