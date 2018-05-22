@@ -75,6 +75,7 @@
   become: yes
   tags: [system, selinux]
 #TODO find out if need to change config to be permanent
+#[WARNING]: SELinux state change will take effect next reboot
 #sed -i -e 's,SELINUX=.*,SELINUX=disabled,g' /etc/selinux/config
 
 # Logging actions that would be blocked

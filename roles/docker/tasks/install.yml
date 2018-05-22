@@ -1,0 +1,30 @@
+---
+- name: 'Add DockerCE repository'
+  yum_repository:
+    name: '{{ item.name }}'
+    description: '{{ item.description }}'
+    baseurl: '{{ item.baseurl }}'
+    gpgkey: '{{ item.gpgkey }}'
+    gpgcheck: '{{ item.gpgcheck }}'
+    enabled: '{{ item.enabled }}'
+  with_items: '{{ docker_yum_repos }}'
+
+- name: 'Install DockerCE dependencies'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: '{{ item }}'
+    state: latest
+  with_items: '{{ docker_required_packages }}'
+  no_log: True
+
+- name: 'Install docker-ce version'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: 'docker-ce'
+    state: latest
+
+- name: 'Add {{ user_name.stdout }} to docker group'
+  user:
+    name: '{{ user_name.stdout }}'
+    group: docker
+    append: yes

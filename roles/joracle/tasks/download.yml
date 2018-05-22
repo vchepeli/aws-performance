@@ -3,8 +3,8 @@
   uri:
     url: "{{joracle_home_page}}"
     return_content: yes
-  no_log: True
   register: result
+  no_log: True
 
 - name: 'Determine latest Oracle JDK download page and version'
   set_fact: latest_java_page_and_version='{{ (result.content.replace("\n","") | regex_replace(".*(/technetwork/java/javase/downloads/jdk(\d+)-downloads.*?.html).*", "http://www.oracle.com/\g<1>\n\g<2>")).split("\n") }}'
@@ -19,8 +19,8 @@
   uri:
     url: '{{ download_page_url }}'
     return_content: yes
-  no_log: True
   register: result
+  no_log: True
 
 - name: 'Set latest Oracle JDK RPM url'
   set_fact: joracle_rpm_url="{{ result.content|regex_search('https?://download.oracle.com/.*?/jdk-\w+-linux-' + joracle_ansible_arch_mappings[ansible_architecture] + '.rpm') }}"

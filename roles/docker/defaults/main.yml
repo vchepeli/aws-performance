@@ -1,0 +1,2 @@
+docker_enabled: yes
+docker_bridge_ip_addr: '172.30.0.0/16'

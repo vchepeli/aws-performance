@@ -1,0 +1,26 @@
+---
+- name: 'Get the current users name'
+  shell: id -u -n
+  changed_when: False
+  register: user_name
+
+- when: docker_enabled
+  block:
+  - include_tasks: 'install.yml'
+    become: yes
+    tags: [docker, install]
+
+  - include_tasks: 'config.yml'
+    become: yes
+    tags: [docker, config]
+
+  - name: 'Enable docker service'
+    systemd:
+      name: docker
+      state: started
+      enabled: yes
+    tags: [docker, service]
+    become: yes
+  always:
+  - include_tasks: 'check.yml'
+    tags: [docker, check]

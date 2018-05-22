@@ -14,7 +14,7 @@
       description: 'EC2 Performance VMs'
   with_file: ~/.ssh/ec2.jenkins
   when: not ansible_check_mode
-  no_log: true
+  no_log: True
   tags: [pjenkins, config]
 
 - name: 'Check Jenkins existing slaves'
@@ -29,8 +29,8 @@
   when: 
     - not ansible_check_mode
     - item.public_dns_name is defined
-  no_log: true
   with_items: '{{ ec2.tagged_instances }}'
+  no_log: True
   tags: [pjenkins, config]
 
 - name: 'Delete Jenkins existing slaves'
@@ -43,10 +43,10 @@
       - 'ec2-perf-{{ slave.item.ami_launch_index }}'
   when:
     - slave.node_exists
-  no_log: true  
   with_items: '{{ ec2_existed_nodes.results }}'
   loop_control:
     loop_var: slave
+  no_log: True
   tags: [pjenkins, config]
 
 - name: 'Create Jenkins slaves'
@@ -70,8 +70,9 @@
         host: '{{ slave.item.public_dns_name }}'
   when:
     - slave.item.public_dns_name is defined
-  no_log: true
+
   with_items: '{{ ec2_existed_nodes.results }}'
   loop_control:
     loop_var: slave
+  no_log: True
   tags: [pjenkins, config]

@@ -1,0 +1,28 @@
+---
+docker_sysconfig_options: OPTIONS='--selinux-enabled --insecure-registry {{ docker_bridge_ip_addr }}'
+docker_required_packages:
+  - yum-utils
+  - device-mapper-persistent-data
+  - lvm2
+
+#https://www.vultr.com/docs/installing-docker-ce-on-centos-7
+#https://download.docker.com/linux/centos/docker-ce.repo
+docker_yum_repos:
+  - name: 'docker-ce-stable'
+    description: 'Docker CE Stable - $basearch'
+    baseurl: 'https://download.docker.com/linux/centos/7/$basearch/stable'
+    gpgkey: 'https://download.docker.com/linux/centos/gpg'
+    gpgcheck: yes
+    enabled: yes
+  - name: 'docker-ce-edge'
+    description: 'Docker CE Edge - $basearch'
+    baseurl: 'https://download.docker.com/linux/centos/7/$basearch/edge'
+    gpgkey: 'https://download.docker.com/linux/centos/gpg'
+    gpgcheck: yes
+    enabled: no
+  - name: 'docker-ce-test'
+    description: 'Docker CE Test - $basearch'
+    baseurl: 'https://download.docker.com/linux/centos/7/$basearch/test'
+    gpgkey: 'https://download.docker.com/linux/centos/gpg'
+    gpgcheck: yes
+    enabled: no

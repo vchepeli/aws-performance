@@ -5,11 +5,6 @@
   when: item not in vars
   with_items: '{{ required_vars }}'
 
-#- name: '{{ software_name | upper }}|Get the current users name'
-#  shell: id -u -n
-#  changed_when: False
-#  register: user_name
-
 - name: '{{ software_name | upper }}|Check @{{ bundle.version }} is already installed'
   stat:
     path: '{{ _bundle_install_dir_ver }}'
@@ -25,7 +20,6 @@
       prefix: '{{ software_name }}'
     changed_when: False
     register: tmp_dir_created
-#    become_user: '{{ user_name.stdout }}'
 
   - name: '{{ software_name | upper }}|Download bundle archive'
     get_url:
@@ -33,15 +27,14 @@
       dest: '{{ tmp_dir_created.path }}'
     when: not tmp_dir_created|skipped
     register: bundle_downloaded
-#    become_user: '{{ user_name.stdout }}'
 
   - name: '{{ software_name | upper }}|Create installation directory'
     file:
       path: '{{ _bundle_install_dir_parent }}'
       state: directory
       owner: '{{ current_user }}'
+    become: yes
     when: not bundle_downloaded|skipped
-#    become_user: '{{ user_name.stdout }}'
 
   - name: '{{ software_name | upper }}|Extract bundle archive'
     unarchive:
@@ -53,7 +46,7 @@
       extra_opts: '{{ _bundle_archive_extra_opts }}'
     when: not bundle_downloaded|skipped
     register: bundle_extracted
-#    become_user: '{{ user_name.stdout }}'
+    no_log: True
 
   - when: _bundle_unzip_strip_top
     block:
@@ -64,9 +57,8 @@
     - name: '{{ software_name | upper }}|Move {{ _bundle_install_dir_creates }}->{{ _bundle_install_dir_ver }}'
       command: 'mv  {{ _bundle_install_dir_creates }} {{ _bundle_install_dir_ver }}'
       changed_when: False
-#      become_user: '{{ user_name.stdout }}'
       when: stat_software_dir.stat.exists
-
+  # block
   - name: '{{ software_name | upper }}|Sym link {{ _bundle_install_dir_ver }} as default'
     file:
       src: '{{ _bundle_install_dir_ver }}'
@@ -76,17 +68,16 @@
       force: yes
     when: not bundle_extracted|skipped
     register: install_dir_default_linked
-#    become_user: '{{ user_name.stdout }}'
 
-  - name: '{{ software_name | upper }}|Sym link /usr/local/bin/{{ software_name }}'
+  - name: '{{ software_name | upper }}|Sym link {{ user_binaries }}/{{ software_name }}'
     file:
       src: '{{ _bundle_install_dir_default }}/{{ _bundle_exec_path }}'
-      dest: '/usr/local/bin/{{ software_name }}'
+      dest: '{{ user_binaries ]}/{{ software_name }}'
       owner: '{{ current_user }}'
       state: link
       force: yes
+    become: yes
     when: not install_dir_default_linked|skipped
-#    become_user: '{{ user_name.stdout }}'
 
   always:
   - name: '{{ software_name | upper }}|Cleanup TMP directory'
@@ -94,4 +85,3 @@
       name: '{{ tmp_dir_created.path }}'
       state: absent
     changed_when: False
-#    become_user: '{{ user_name.stdout }}'

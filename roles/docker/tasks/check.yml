@@ -1,0 +1,8 @@
+---
+- name: 'Check bridge network'
+  command: docker network inspect -f '{% raw %}{{range .IPAM.Config }}{{ .Subnet }}{{end}}{% endraw %}' bridge
+  become: yes
+  changed_when: False
+  register: docker_bridge_network_addr
+
+- debug: var=docker_bridge_network_addr.stdout

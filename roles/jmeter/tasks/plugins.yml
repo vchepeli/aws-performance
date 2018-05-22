@@ -39,9 +39,9 @@
 
 - name: 'Find all installed JMeter plugins'
   find:
-    paths: '{{ jmeter_installation_default_ext }}'
+    paths="{{ jmeter_installation_default_ext }}"
     patterns="^jmeter-.*?\\.(?:jar)$"
-    use_regex: True
+    use_regex=True
   register: jmeter_installed_plugins
   tags: [jmeter, plugins]
 
@@ -55,9 +55,9 @@
 
 - name: 'Find all installed JMeter plugins'
   find:
-    paths: '{{ jmeter_installation_default_ext }}'
+    paths="{{ jmeter_installation_default_ext }}"
     patterns="^jmeter-.*?\\.(?:jar)$"
-    use_regex: True
+    use_regex=True
   register: jmeter_installed_plugins
   tags: [jmeter, plugins]
 

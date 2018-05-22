@@ -1,10 +1,14 @@
 ---
 # Need to update references to ansible cache to use this variable
-ansible_cache_dir: /var/cache/ansible
 software_install_dir: /opt
 user_binaries: /usr/local/bin
 
 ec2_enabled: yes
 jmeter_enabled: yes
+docker_enabled: yes
+
+#ansible_cache_dir: /var/cache/ansible
+#jenkins_user_name: jenkins
+#jenkins_user_home: /var/lib/jenkins
 
 debug: yes
