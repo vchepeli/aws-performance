@@ -1,0 +1,17 @@
+---
+system_packages:
+  - ca-certificates
+  - curl
+  - git
+  - gnuplot
+  - epel-release
+  - git
+  - mc
+  - ntp
+  - net-tools
+  - psmisc
+  - screen
+  - tree
+  - unzip
+  - vim
+  - wget

@@ -1,7 +1,6 @@
 #!/usr/bin/python
-from ansible.module_utils.basic import *
 import jenkins
-import ssl
+from ansible.module_utils.basic import *
 
 create_credential_groovy = u"""
 import jenkins.*;
@@ -53,59 +52,58 @@ if (!updated) {{
 
 
 def render_create_credentials_script(kwargs):
-    return create_credential_groovy.format(
-        name = kwargs['name'],
-        cls = kwargs['cls'],
-        userName = kwargs['userName'],
-        keyCls = kwargs['keyCls'],
-        keyFile = kwargs['keyFile'],
-        passphrase = kwargs['passphrase'],
-        description = kwargs['description']
-    )
+  return create_credential_groovy.format(
+    name=kwargs['name'],
+    cls=kwargs['cls'],
+    userName=kwargs['userName'],
+    keyCls=kwargs['keyCls'],
+    keyFile=kwargs['keyFile'],
+    passphrase=kwargs['passphrase'],
+    description=kwargs['description']
+  )
 
 
 def _jenkins_credentials(jenkins_url=None, username=None, password=None, **kwargs):
+  result = {
+    'cmd': jenkins_url,
+    'changed': False,
+    'failed': True,
+    'msg': '',
+    'rc': 1
+  }
 
-    result = {
-        'cmd': jenkins_url,
-        'changed': False,
-        'failed': True,
-        'msg': '',
-        'rc': 1
-    }
+  server = jenkins.Jenkins(jenkins_url, username, password)
 
-    server = jenkins.Jenkins(jenkins_url, username, password)
+  groovy = render_create_credentials_script(**kwargs)
+  result['cmd'] += ' {}'.format(groovy)
 
-    groovy = render_create_credentials_script(**kwargs)
-    result['cmd'] += ' {}'.format(groovy)
+  try:
+    output = server.run_script(groovy)
+    if 'Error' in output or 'Exception' in output:
+      result['msg'] = output
+      return result
 
-    try:
-        output = server.run_script(groovy)
-        if 'Error' in output or 'Exception' in output:
-            result['msg'] = output
-            return result
-
-    except jenkins.JenkinsException as e:
-        result['msg'] = e.message
-        return result
-
-    result['jenkins_credentials'] = output
-    result['changed'] = True
-    result['failed'] = False
-    result['rc'] = 0
-
+  except jenkins.JenkinsException as e:
+    result['msg'] = e.message
     return result
 
+  result['jenkins_credentials'] = output
+  result['changed'] = True
+  result['failed'] = False
+  result['rc'] = 0
+
+  return result
+
 if __name__ == '__main__':
-    global module
-    module = AnsibleModule(
-        argument_spec={
-            'jenkins_url': {'required': True},
-            'username': {'required': True},
-            'password': {'required': True},
-            # 'args': {'required': False, 'type': 'list'},
-            'kwargs': {'required': False, 'type': 'dict'},
-        },
-        supports_check_mode=False
-    )
-    module.exit_json(**_jenkins_credentials(**module.params))
+  global module
+  module = AnsibleModule(
+    argument_spec={
+      'jenkins_url': {'required': True},
+      'username': {'required': True},
+      'password': {'required': True},
+      # 'args': {'required': False, 'type': 'list'},
+      'kwargs': {'required': False, 'type': 'dict'},
+    },
+    supports_check_mode=False
+  )
+  module.exit_json(**_jenkins_credentials(**module.params))

@@ -1,3 +1,11 @@
 ---
 system_dns_config: /etc/resolv.conf
 system_dns_server: 8.8.8.8
+
+epel_packages:
+  - chromium
+  - chromedriver
+  - chromium-headless
+  - collectl
+  - htop
+  - python2-pip

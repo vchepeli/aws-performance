@@ -1,38 +1,38 @@
 ---
-- name: Get latest Oracle JDK download page
+- name: 'Get latest Oracle JDK download page'
   uri:
     url: "{{joracle_home_page}}"
     return_content: yes
   no_log: True
   register: result
 
-- name: Determine latest Oracle JDK download page and version
+- name: 'Determine latest Oracle JDK download page and version'
   set_fact: latest_java_page_and_version='{{ (result.content.replace("\n","") | regex_replace(".*(/technetwork/java/javase/downloads/jdk(\d+)-downloads.*?.html).*", "http://www.oracle.com/\g<1>\n\g<2>")).split("\n") }}'
 
-- name: Define download page URL based on latest Oracle JDK version
+- name: 'Define download page URL based on latest Oracle JDK version'
   set_fact: download_page_url='{{ latest_java_page_and_version[0] }}'
   when: latest_java_page_and_version[1]|version_compare(joracle_version,'=')
 
 - debug: msg='Download page URL is {{ download_page_url }}'
 
-- name: Get latest Oracle JDK RPM url
+- name: 'Get latest Oracle JDK RPM url'
   uri:
     url: '{{ download_page_url }}'
     return_content: yes
   no_log: True
   register: result
 
-- name: Set latest Oracle JDK RPM url
+- name: 'Set latest Oracle JDK RPM url'
   set_fact: joracle_rpm_url="{{ result.content|regex_search('https?://download.oracle.com/.*?/jdk-\w+-linux-' + joracle_ansible_arch_mappings[ansible_architecture] + '.rpm') }}"
 
-- name: Set latest Oracle JDK versions
+- name: 'Set latest Oracle JDK versions'
   set_fact: joracle_rpm_filename='{{ joracle_rpm_url | basename }}'
             joracle_version='{{ joracle_rpm_url | basename | regex_replace("jdk-(\d+)u(\d+)-linux.*","\g<1>") }}'
             joracle_version_update='{{ joracle_rpm_url | basename|regex_replace("jdk-(\d+)u(\d+)-linux.*","\g<2>") }}'
 
 - debug: msg='Downloading Oracle JDK from {{ joracle_rpm_url }}'
 
-- name: Download latest Oracle JDK RPM
+- name: 'Download latest Oracle JDK RPM'
   get_url:
     headers='Cookie:gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie'    dest="{{ joracle_dir_source }}/{{ joracle_rpm_filename }}"
     url="{{ joracle_rpm_url }}"

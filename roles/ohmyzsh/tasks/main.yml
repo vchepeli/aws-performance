@@ -1,0 +1,32 @@
+---
+- name: 'Ensure ZSH package installed'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: 'zsh'
+    state: present
+  become: yes
+  tags: [ohmyzsh, install]
+
+- name: Clone oh-my-zsh repo
+  git:
+    repo=git://github.com/robbyrussell/oh-my-zsh.git 
+    dest=/home/{{ current_user }}/.oh-my-zsh
+  become: yes
+  become_user: '{{ current_user }}'
+  tags: [oh-my-zsh, install]
+
+- name: Create a new zsh config
+  command: cp /home/{{ current_user }}/.oh-my-zsh/templates/zshrc.zsh-template /home/{{ current_user }}/.zshrc
+  args:
+    creates: /home/{{ current_user }}/.zshrc
+  changed_when: False
+  become: yes
+  become_user: '{{ current_user }}'
+  tags: [oh-my-zsh, config]
+
+- name: Set zsh as default shell
+  user:
+    name="{{ current_user }}"
+    shell=/usr/bin/zsh
+  become: yes
+  tags: [oh-my-zsh, config]

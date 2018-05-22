@@ -5,10 +5,10 @@
   when: item not in vars
   with_items: '{{ required_vars }}'
 
-- name: '{{ software_name | upper }}|Get the current users name'
-  shell: id -u -n
-  changed_when: False
-  register: user_name
+#- name: '{{ software_name | upper }}|Get the current users name'
+#  shell: id -u -n
+#  changed_when: False
+#  register: user_name
 
 - name: '{{ software_name | upper }}|Check @{{ bundle.version }} is already installed'
   stat:
@@ -94,5 +94,4 @@
       name: '{{ tmp_dir_created.path }}'
       state: absent
     changed_when: False
-    ignore_errors: no
 #    become_user: '{{ user_name.stdout }}'

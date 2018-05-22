@@ -1,31 +1,35 @@
 ---
-- name: Ensure all RPM packages updated
-  yum: 
+- name: 'Ensure all RPM packages updated'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
     name: '*'
     state: latest
   become: yes
+  no_log: True
   tags: [system, packages]
 
-- name: Ensure RPM packages installed
-  yum:
-    pkg: '{{ item }}'
+- name: 'Ensure SYSTEM packages installed'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: '{{ item }}'
     state: latest
   become: yes
+  with_items: '{{ system_packages }}'
   tags: [system, packages]
-  with_items:
-    - curl
-    - epel-release
-    - git
-    - mc
-    - ntp
-    - net-tools
-    - tree
-    - unzip
-    - vim
-    - wget
-    - zip
 
-- name: Ensure the NTP service is running and enabled
+# TODO workoaround for epel repo fix
+# yum --disablerepo=epel -y update  ca-certificates
+
+- name: 'Ensure EPEL packages installed'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: '{{ item }}'
+    state: latest
+  become: yes
+  with_items: '{{ epel_packages }}'
+  tags: [system, packages]
+
+- name: 'Ensure the NTP service is running and enabled'
   service:
     name: ntpd
     state: started
@@ -33,7 +37,7 @@
   become: yes
   tags: [system, ntp]
 
-- name: Ensure MOTD file is present and updated
+- name: 'Ensure MOTD file is present and updated'
   template:
     src: motd.j2
     dest: /etc/motd
@@ -43,25 +47,43 @@
   become: yes
   tags: [system, motd]
 
-- name: Set System limits
+- name: 'Set System limits'
   lineinfile: dest=/etc/security/limits.conf line='{{ item.key }}' regexp='{{ item.value }}'
   with_dict:
-    "*               soft    nofile          65536" : '\*\s+soft\s+nofile'
-    "*               hard    nofile          65536" : '\*\s+hard\s+nofile'
-    "root            soft    nofile          16384" : 'root\s+soft\s+nofile'
-    "root            hard    nofile          65536" : 'root\s+hard\s+nofile'
+    '*         hard    nofile      999999' : '\*\s+hard\s+nofile'
+    '*         soft    nofile      999999' : '\*\s+soft\s+nofile'
+    'root      hard    nofile      999999' : 'root\s+hard\s+nofile'
+    'root      soft    nofile      999999' : 'root\s+soft\s+nofile'
   become: yes
   changed_when: False
   tags: [system, limits]
 
-- name: Set LC_ALL and LANG parameters
+- name: 'Set LC_ALL and LANG parameters'
   lineinfile:
     dest: /etc/environment
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
+  become: yes
   with_items:
     - { regexp: '^LANG=', line: 'LANG=en_US.utf-8' }
     - { regexp: '^LC_ALL=', line: 'LC_ALL=en_US.utf-8' }
+  tags: [system, locale]
+
+- name: 'Disable SELinux'
+  selinux:
+    state: disabled
+  become: yes
+  tags: [system, selinux]
+#TODO find out if need to change config to be permanent
+#sed -i -e 's,SELINUX=.*,SELINUX=disabled,g' /etc/selinux/config
+
+# Logging actions that would be blocked
+#- name: 'Put SELinux in permissive mode'
+#  selinux:
+#    policy: targeted
+#    state: permissive
+#  become: yes
+#  tags: [system, selinux]
 
 #- name: Create /etc/hosts file
 #  template:
@@ -79,7 +101,7 @@
 #  become: yes
 #  tags: [system, hostname]
 
-#- name: Make Centos user sudoer
+#- name: Make Jenkins user sudoer
 #  lineinfile:
 #    dest: /etc/sudoers
 #    state: present

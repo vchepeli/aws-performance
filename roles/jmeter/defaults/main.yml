@@ -15,18 +15,18 @@ jmeter_plugins_manager_binaries_url: "https://repo1.maven.org/maven2/kg/apc/jmet
 cmdrunner_version: 2.0
 cmdrunner_binaries_url: "https://repo1.maven.org/maven2/kg/apc/cmdrunner"
 jmeter_plugins_set:
-  - jpgc-graphs-basic
-  - jpgc-perfmon
+  - blazemeter-debugger
   - jpgc-casutg
-  - jpgc-webdriver
   - jpgc-dummy
   - jpgc-fifo
-  - jpgc-functions
   - jpgc-ffw
-  - jpgc-standard
-  - blazemeter-debugger
+  - jpgc-functions
+  - jpgc-graphs-basic
+  - jpgc-perfmon
   - jpgc-prmctl
+  - jpgc-standard
   - jpgc-tst
+  - jpgc-webdriver
 
 jmeter_config_props:
   jmeter:

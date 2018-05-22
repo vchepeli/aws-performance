@@ -14,7 +14,6 @@
   args: 
     chdir: '{{ jmeter_installation_default_dir }}'
   changed_when: jmeter_plugins_manager_download|changed
-  ignore_errors: '{{ ansible_check_mode }}'
   tags: [jmeter, plugins]
 
 - name: 'Check PluginsManagerCMD.{sh,bat} located in {{ jmeter_installation_default_bin }}'
@@ -52,7 +51,6 @@
     chdir: '{{ jmeter_installation_default_dir }}'
   async: 100
   changed_when: jmeter_installed_plugins and jmeter_installed_plugins.matched|int == 1
-  ignore_errors: '{{ ansible_check_mode }}'
   tags: [jmeter, plugins]
 
 - name: 'Find all installed JMeter plugins'
