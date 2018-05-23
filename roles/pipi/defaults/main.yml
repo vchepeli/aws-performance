@@ -1,0 +1,6 @@
+---
+pip_version: 9.0.0
+pip_packages:
+  - docker-compose
+  - grip
+  - locustio

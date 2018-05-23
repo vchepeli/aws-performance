@@ -72,7 +72,7 @@
   - name: '{{ software_name | upper }}|Sym link {{ user_binaries }}/{{ software_name }}'
     file:
       src: '{{ _bundle_install_dir_default }}/{{ _bundle_exec_path }}'
-      dest: '{{ user_binaries ]}/{{ software_name }}'
+      dest: '{{ user_binaries }}/{{ software_name }}'
       owner: '{{ current_user }}'
       state: link
       force: yes

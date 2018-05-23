@@ -8,4 +8,3 @@ epel_packages:
   - chromium-headless
   - collectl
   - htop
-  - python2-pip

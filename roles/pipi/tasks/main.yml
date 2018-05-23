@@ -1,0 +1,34 @@
+---
+- name: 'Ensure python2-pip installed'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: 'python2-pip'
+    state: latest
+  become: yes
+  tags: [pipi, packages]
+
+- name: Install latest version
+  pip:
+    name: pip
+    state: latest
+    extra_args: --upgrade
+  become: yes
+  tags: [pipi, upgrade]
+
+- name: Install pip packages
+  pip:
+    name: '{{ item }}'
+    state: latest
+  become: yes
+  with_items: '{{ pip_packages }}'
+  no_log: True
+  tags: [pipi, install]
+
+- name: Check installed version
+  shell: pip --version | awk '{print $2}'
+  changed_when: False
+  register: pip_curr_version_installed
+  failed_when: pip_curr_version_installed.stdout|version_compare(pip_version,'<')
+  tags: [pipi, check]
+
+- debug: var=pip_curr_version_installed

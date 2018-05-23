@@ -17,9 +17,6 @@
   with_items: '{{ system_packages }}'
   tags: [system, packages]
 
-# TODO workoaround for epel repo fix
-# yum --disablerepo=epel -y update  ca-certificates
-
 - name: 'Ensure EPEL packages installed'
   action: '{{ ansible_pkg_mgr }}'
   args:
@@ -69,22 +66,20 @@
     - { regexp: '^LC_ALL=', line: 'LC_ALL=en_US.utf-8' }
   tags: [system, locale]
 
-- name: 'Disable SELinux'
+
+- name: 'Put SELinux in permissive mode, logging actions that would be blocked'
+  selinux:
+    policy: targeted
+    state: permissive
+  become: yes
+  tags: [system, selinux]
+
+# Disable SELinux
+- name: 'Disable SELinux at next reboot'
   selinux:
     state: disabled
   become: yes
   tags: [system, selinux]
-#TODO find out if need to change config to be permanent
-#[WARNING]: SELinux state change will take effect next reboot
-#sed -i -e 's,SELINUX=.*,SELINUX=disabled,g' /etc/selinux/config
-
-# Logging actions that would be blocked
-#- name: 'Put SELinux in permissive mode'
-#  selinux:
-#    policy: targeted
-#    state: permissive
-#  become: yes
-#  tags: [system, selinux]
 
 #- name: Create /etc/hosts file
 #  template:

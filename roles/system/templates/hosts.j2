@@ -12,3 +12,5 @@
 
 #{% endif %}
 #{% endfor %}
+
+#{{ hostvars[host].inventory_hostname }} {{ hostvars[host]['ansible_all_ipv4_addresses'][0] }}
