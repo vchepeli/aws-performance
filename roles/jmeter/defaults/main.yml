@@ -3,16 +3,16 @@ jmeter_enabled: yes
 software_name: 'jmeter'
 bundle:
   name: 'apache-jmeter'
-  version: '3.3'
+  version: '4.0'
   mirror: 'https://archive.apache.org/dist/jmeter'
   url_skip_ver: True
   url_skip_binaries: False
 
 jmeter_plugins_enabled: yes
-jmeter_plugins_manager_version: 0.15
+jmeter_plugins_manager_version: 1.0.2
 jmeter_plugins_manager_binaries_url: "https://repo1.maven.org/maven2/kg/apc/jmeter-plugins-manager"
 
-cmdrunner_version: 2.0
+cmdrunner_version: 2.2
 cmdrunner_binaries_url: "https://repo1.maven.org/maven2/kg/apc/cmdrunner"
 jmeter_plugins_set:
   - blazemeter-debugger

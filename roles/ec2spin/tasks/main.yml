@@ -1,0 +1,26 @@
+---
+- name: 'Install Boto library'
+  pip:
+    name: boto
+    state: latest
+  become: yes
+  tags: [ec2, boto]
+
+- when: ec2_enabled
+  block:
+  - name: 'Add EC2 keypair'
+    ec2_key:
+      name: '{{ ec2_key_name }}'
+      key_material: '{{ item }}'
+      region: '{{ ec2_region }}'
+    with_file: ~/.ssh/ec2.centos.pub
+    tags: [ec2, keypair]
+
+  - include_tasks: security-group.yml
+    when: ec2_enabled
+    tags: [ec2, security]
+
+  - include_tasks: start-vms.yml
+    when: ec2_enabled
+    tags: [ec2, start-vms]
+  # block

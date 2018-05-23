@@ -1,7 +1,8 @@
 ---
-# UNIX user vars
-jenkins.user.home: /var/lib/jenkins
-jenkins.user.name: jenkins
+jenkins:
+  user:
+    name: jenkins
+    home: /var/lib/jenkins
 # Jenkins master credentials
 jenkins_admin_username: "{{ vault_jenkins_username|default('admin') }}"
 jenkins_admin_password: "{{ vault_jenkins_password|default('admin') }}"
@@ -13,7 +14,7 @@ jenkins_master_url: "{{ vault_jenkins_url|default('http://localhost:8080') }}"
 jenkins_slave_executors: 2
 jenkins_slave_description: 'EC2 Performance Testing Slave'
 jenkins_slave_port: 22
-jenkins_slave_labels: >
-  ec2-perf
-  mobile
+jenkins_slave_labels:
+  - ec2-perf
+  - mobile
 jenkins_slave_credentials_id: master-ssh

@@ -47,7 +47,10 @@
   tags: [system, motd]
 
 - name: 'Set System limits'
-  lineinfile: dest=/etc/security/limits.conf line='{{ item.key }}' regexp='{{ item.value }}'
+  lineinfile:
+    dest: /etc/security/limits.conf
+    line: '{{ item.key }}'
+    regexp: '{{ item.value }}'
   with_dict:
     '*         hard    nofile      999999' : '\*\s+hard\s+nofile'
     '*         soft    nofile      999999' : '\*\s+soft\s+nofile'

@@ -1,5 +1,5 @@
 ---
 jenkins:
   user:
-    home: '{{ jenkins_user_home|default("/var/lib/jenkins") }}'
-    name: '{{ jenkins_user_name|default("jenkins") }}'
+    home: '/var/lib/jenkins"'
+    name: 'jenkins'

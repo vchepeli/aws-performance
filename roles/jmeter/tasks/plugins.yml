@@ -3,6 +3,7 @@
   get_url:
     url: '{{ jmeter_plugins_manager_bundle_url }}'
     dest: '{{ jmeter_installation_default_ext }}'
+  become: yes
   when: jmeter_plugins_enabled
   register: jmeter_plugins_manager_download
   tags: [jmeter, plugins]
@@ -13,6 +14,7 @@
     org.jmeterplugins.repository.PluginManagerCMDInstaller
   args: 
     chdir: '{{ jmeter_installation_default_dir }}'
+  become: yes
   changed_when: jmeter_plugins_manager_download|changed
   tags: [jmeter, plugins]
 
@@ -33,6 +35,7 @@
   get_url:
     url: '{{ cmdrunner_download_url }}'
     dest: '{{ jmeter_installation_default_lib }}'
+  become: yes
   when: jmeter_plugins_enabled
   register: cmdrunner_download
   tags: [jmeter, plugins]
@@ -50,6 +53,7 @@
   args: 
     chdir: '{{ jmeter_installation_default_dir }}'
   async: 100
+  become: yes
   changed_when: jmeter_installed_plugins and jmeter_installed_plugins.matched|int == 1
   tags: [jmeter, plugins]
 

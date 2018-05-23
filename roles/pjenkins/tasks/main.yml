@@ -5,4 +5,5 @@
   become: yes
   tags: [pjenkins, install]
 
-- include: config.yml
+- include_tasks: config.yml
+  tags: [pjenkins, config]

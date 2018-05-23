@@ -15,7 +15,6 @@
   with_file: ~/.ssh/ec2.jenkins
   when: not ansible_check_mode
   no_log: True
-  tags: [pjenkins, config]
 
 - name: 'Check Jenkins existing slaves'
   jenkins_api:
@@ -31,7 +30,6 @@
     - item.public_dns_name is defined
   with_items: '{{ ec2.tagged_instances }}'
   no_log: True
-  tags: [pjenkins, config]
 
 - name: 'Delete Jenkins existing slaves'
   jenkins_api:
@@ -47,7 +45,6 @@
   loop_control:
     loop_var: slave
   no_log: True
-  tags: [pjenkins, config]
 
 - name: 'Create Jenkins slaves'
   jenkins_api:
@@ -61,7 +58,7 @@
       numExecutors: '{{ jenkins_slave_executors }}'
       nodeDescription: '{{ jenkins_slave_description }}'
       remoteFS: '{{ jenkins.user.home }}'
-      labels: '{{ jenkins_slave_labels }}'
+      labels: '{{ jenkins_slave_labels|join(" ") }}'
       launcher: 'hudson.plugins.sshslaves.SSHLauncher'
       launcher_params:
         port: '{{ jenkins_slave_port }}'
@@ -75,4 +72,3 @@
   loop_control:
     loop_var: slave
   no_log: True
-  tags: [pjenkins, config]

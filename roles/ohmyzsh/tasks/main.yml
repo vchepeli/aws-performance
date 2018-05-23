@@ -9,24 +9,24 @@
 
 - name: Clone oh-my-zsh repo
   git:
-    repo=git://github.com/robbyrussell/oh-my-zsh.git 
-    dest=/home/{{ current_user }}/.oh-my-zsh
-  become: yes
+    repo: git://github.com/robbyrussell/oh-my-zsh.git
+    dest: ~/.oh-my-zsh
   become_user: '{{ current_user }}'
-  tags: [oh-my-zsh, install]
+  become: yes
+  tags: [ohmyzsh, install]
 
 - name: Create a new zsh config
-  command: cp /home/{{ current_user }}/.oh-my-zsh/templates/zshrc.zsh-template /home/{{ current_user }}/.zshrc
-  args:
-    creates: /home/{{ current_user }}/.zshrc
-  changed_when: False
-  become: yes
+  copy:
+    src: ~/.oh-my-zsh/templates/zshrc.zsh-template
+    dest: ~/.zshrc
+    remote_src: yes
   become_user: '{{ current_user }}'
-  tags: [oh-my-zsh, config]
+  become: yes
+  tags: [ohmyzsh, config]
 
 - name: Set zsh as default shell
   user:
-    name="{{ current_user }}"
-    shell=/usr/bin/zsh
+    name: '{{ current_user }}'
+    shell: /usr/bin/zsh
   become: yes
-  tags: [oh-my-zsh, config]
+  tags: [ohmyzsh, config]

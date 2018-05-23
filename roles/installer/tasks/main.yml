@@ -44,6 +44,7 @@
       creates: '{{ _bundle_install_dir_creates }}'
       copy: no
       extra_opts: '{{ bundle_archive_extra_opts }}'
+    become: yes
     when: not bundle_downloaded|skipped
     register: bundle_extracted
     no_log: True
@@ -56,6 +57,7 @@
 
     - name: '{{ software_name | upper }}|Move {{ _bundle_install_dir_creates }}->{{ _bundle_install_dir_ver }}'
       command: 'mv  {{ _bundle_install_dir_creates }} {{ _bundle_install_dir_ver }}'
+      become: yes
       changed_when: False
       when: stat_software_dir.stat.exists
   # block
@@ -66,6 +68,7 @@
       owner: '{{ current_user }}'
       state: link
       force: yes
+    become: yes
     when: not bundle_extracted|skipped
     register: install_dir_default_linked
 

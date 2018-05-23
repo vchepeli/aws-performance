@@ -3,12 +3,8 @@
 software_install_dir: /opt
 user_binaries: /usr/local/bin
 
-ec2_enabled: yes
+ec2_enabled: no
 jmeter_enabled: yes
 docker_enabled: yes
-
-#ansible_cache_dir: /var/cache/ansible
-#jenkins_user_name: jenkins
-#jenkins_user_home: /var/lib/jenkins
 
 debug: yes

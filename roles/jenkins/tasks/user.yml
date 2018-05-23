@@ -5,14 +5,12 @@
     home: '{{ jenkins.user.home }}'
     shell: /bin/bash
     state: present
-  become: yes
 
 - name: 'Add master public key to authorized keys'
   authorized_key:
     user: '{{ jenkins.user.name }}'
     key: '{{ item }}'
   with_file: ~/.ssh/ec2.jenkins.pub
-  become: yes
 
 - name: 'Update authorized_keys rights'
   file: 
@@ -20,4 +18,3 @@
     state: file
     mode: 0600 
     owner: jenkins
-  become: yes
