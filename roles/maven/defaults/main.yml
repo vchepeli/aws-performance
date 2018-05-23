@@ -8,3 +8,4 @@ bundle:
   suffix: '-bin'
   url_skip_binaries: False
   exec_path: 'bin/mvn'
+  install_dir: '{{ software_install_dir }}/maven'

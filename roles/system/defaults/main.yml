@@ -1,10 +1,11 @@
 ---
+epel_packages:
+  - collectl
+  - htop
+  - python2-pip
+
+system_pip_version: 9.0.0
+
 system_dns_config: /etc/resolv.conf
 system_dns_server: 8.8.8.8
 
-epel_packages:
-  - chromium
-  - chromedriver
-  - chromium-headless
-  - collectl
-  - htop

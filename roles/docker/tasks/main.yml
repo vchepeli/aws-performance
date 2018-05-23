@@ -10,6 +10,10 @@
     become: yes
     tags: [docker, install]
 
+  - include_tasks: 'plugins.yml'
+    become: yes
+    tags: [docker, plugins]
+
   - include_tasks: 'config.yml'
     become: yes
     tags: [docker, config]

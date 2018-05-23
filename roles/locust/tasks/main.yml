@@ -1,0 +1,19 @@
+---
+- name: 'Ensure PIP packages installed'
+  pip:
+    name: '{{ item }}'
+    state: latest
+  become: yes
+  with_items: '{{ pip_packages }}'
+  no_log: True
+  tags: [locust, pip]
+
+- name: 'Ensure EPEL packages installed'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: '{{ item }}'
+    state: latest
+  become: yes
+  with_items: '{{ epel_packages }}'
+  no_log: True
+  tags: [locust, packages]

@@ -1,0 +1,9 @@
+---
+#shell: "ps -ef | grep sshd | grep {{ user_name.stdout }} | grep -v grep | awk '{print $2}' | xargs kill -9"
+- name: 'Kill SSH sessions'
+  shell: sleep 1; pkill -u {{ user_name.stdout }} sshd
+  changed_when: False
+  failed_when: False
+  async: 3
+  poll: 2
+  tags: [docker, ssh]

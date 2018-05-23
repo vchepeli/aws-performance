@@ -21,11 +21,3 @@
 
   - include_tasks: 'config.yml'
     tags: [gatling, config]
-
-#TODO
-#- name: Checking installed version of {{ software_name | upper }} client
-#  shell: test "$(oc version | head -n1 | awk '{print $2}' 2> /dev/null)" = v{{ bundle.version }}+{{ bundle_sha }}
-#  ignore_errors: yes
-#  register: wanted_version_installed
-#  failed_when: wanted_version_installed.rc > 0
-#  tags: [oc, postcheck]

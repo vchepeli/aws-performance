@@ -3,7 +3,7 @@ jmeter_enabled: yes
 software_name: 'jmeter'
 bundle:
   name: 'apache-jmeter'
-  version: 3.3
+  version: '3.3'
   mirror: 'https://archive.apache.org/dist/jmeter'
   url_skip_ver: True
   url_skip_binaries: False
@@ -35,14 +35,3 @@ jmeter_config_props:
     - {key: log_level.jorphan, value: INFO}
     - {key: jmeter.reportgenerator.apdex_satisfied_threshold, value: 4000}
     - {key: jmeter.reportgenerator.apdex_tolerated_threshold, value: 4000}
-    
-# jmeter_test_plans: # TODO Create working folders for JMETER test plans
-#   - name: 'testplan'
-#     src_dir: ~/Work/Performance/WFM
-#     dest_dir: /home/ptester/JMeter
-#     jmx_file_name: 'wfm_portal.jmx'
-#     jtl_file_name: 'wfm_portal.jtl'
-#     duration: '300'
-#     threads: '50'
-#     host: '<HOST>'
-#     # files: {src: '/opt/tests/feeds.csv', dest: '/opt/tests/'} DIR

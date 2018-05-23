@@ -15,6 +15,7 @@
     state: latest
   become: yes
   with_items: '{{ system_packages }}'
+  no_log: True
   tags: [system, packages]
 
 - name: 'Ensure EPEL packages installed'
@@ -24,6 +25,7 @@
     state: latest
   become: yes
   with_items: '{{ epel_packages }}'
+  no_log: True
   tags: [system, packages]
 
 - name: 'Ensure the NTP service is running and enabled'
@@ -66,7 +68,6 @@
     - { regexp: '^LC_ALL=', line: 'LC_ALL=en_US.utf-8' }
   tags: [system, locale]
 
-
 - name: 'Put SELinux in permissive mode, logging actions that would be blocked'
   selinux:
     policy: targeted
@@ -81,6 +82,24 @@
   become: yes
   tags: [system, selinux]
 
+- name: 'Upgrade PIP version'
+  pip:
+    name: pip
+    state: latest
+    extra_args: --upgrade
+  become: yes
+  tags: [system, pip]
+
+- name: 'Check PIP version'
+  shell: pip --version | awk '{print $2}'
+  changed_when: False
+  register: pip_curr_version
+  failed_when: pip_curr_version.stdout|version_compare(system_pip_version,'<')
+  tags: [system, pip]
+
+- debug: var=pip_curr_version
+
+#TODO
 #- name: Create /etc/hosts file
 #  template:
 #    src: hosts.j2

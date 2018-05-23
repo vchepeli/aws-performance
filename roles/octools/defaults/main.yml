@@ -1,0 +1,11 @@
+---
+octools_enabled: yes
+software_name: 'oc'
+bundle:
+  name: 'openshift-origin-client-tools'
+  version: 'v3.9.0'
+  sha: '191fece'
+  mirror: 'https://github.com/openshift/origin/releases/download'
+  unzip_strip_top: False
+  install_dir: '{{ software_install_dir }}/openshift/oc'
+  exec_path: 'oc'

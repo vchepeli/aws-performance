@@ -26,5 +26,9 @@
 - name: 'Add {{ user_name.stdout }} to docker group'
   user:
     name: '{{ user_name.stdout }}'
-    group: docker
+    groups:
+      - docker
     append: yes
+  register: docker_group_add
+#  notify:
+#    - 'Kill SSH sessions'

@@ -1,0 +1,4 @@
+---
+bundle_archive_ext: '.tar.gz'
+bundle_platform: 'linux-64bit'
+bundle_archive_extra_opts: '--strip-components=1'

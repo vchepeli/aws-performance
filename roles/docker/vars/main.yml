@@ -1,5 +1,5 @@
 ---
-docker_sysconfig_options: OPTIONS='--selinux-enabled --insecure-registry {{ docker_bridge_ip_addr }}'
+docker_sysconfig_options: OPTIONS='--selinux-disabled --insecure-registry {{ docker_bridge_ip_addr }}'
 docker_required_packages:
   - yum-utils
   - device-mapper-persistent-data

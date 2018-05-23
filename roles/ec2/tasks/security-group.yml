@@ -1,31 +1,26 @@
 ---
-- name: 'JMeter security group'
+- name: Configure EC2 security groups
   ec2_group:
-    name: jmeter
-    description: allow Remote Method Invocation (RMI) access
-    region: "{{ ec2_region }}"
+    name: '{{ item.name }}'
+    description: '{{ item.description}}'
+    region: '{{ ec2_region }}'
     rules:
-      - proto: tcp
-        from_port: 1099
-        to_port: 1099
+      - proto: '{{ item.proto }}'
+        from_port: '{{ item.port }}'
+        to_port: '{{ item.port }}'
         cidr_ip: 0.0.0.0/0
+  with_items:
+    - {name: mperf-jmeter, description: Allow Remote Method Invocation (RMI) access, proto: tcp, port: 1099}
+    - {name: mperf-ssh, description: Allow SSH access, proto: tcp, port: 22}
+  tags: [ec2, sec-group]
 
-- name: 'SSH security group'
-  ec2_group:
-    name: ssh
-    description: allow ssh access
-    region: "{{ ec2_region }}"
-    rules:
-      - proto: tcp
-        from_port: 22
-        to_port: 22
-        cidr_ip: 0.0.0.0/0
 
-- name: 'Outbound security group'
+- name: Configure Outbound security group
   ec2_group:
-    name: outbound
-    description: allow outbound connections to the internet
+    name: mperf-outbound
+    description: Allow outbound connections to the internet
     region: "{{ ec2_region }}"
     rules_egress:
       - proto: all
         cidr_ip: 0.0.0.0/0
+  tags: [ec2, sec-group]

@@ -1,0 +1,9 @@
+---
+pip_packages:
+  - grip
+  - locustio
+
+epel_packages:
+  - chromium
+  - chromedriver
+  - chromium-headless

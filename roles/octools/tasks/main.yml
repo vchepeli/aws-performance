@@ -1,3 +1,4 @@
+---
 - name: 'Resolve platform specific vars'
   include_vars: '{{item}}'
   with_first_found:
@@ -8,23 +9,23 @@
       skip: true
       paths:
         - '{{role_path}}/vars'
-  tags: [maven, vars]
+  tags: [octools, vars]
 
-- when: maven_enabled
+- when: octools_enabled
   block:
   - include_tasks: 'install.yml'
-    tags: [maven, install]
+    tags: [octools, install]
 
   - include_tasks: 'plugins.yml'
-    tags: [maven, plugins]
+    tags: [octools, plugins]
 
   - include_tasks: 'config.yml'
-    tags: [maven, config]
+    tags: [octools, config]
 
-  - name: Checking installed version of maven
-    shell: mvn -v 2>&1 | head -n1 | awk '{print $3}'
+  - name: Checking installed version of OC
+    shell: oc version 2>&1 | head -n1 | awk '{print $2}'
     changed_when: False
     ignore_errors: yes
-    register: maven_curr_version
-    failed_when: maven_curr_version.stdout|version_compare(bundle.version,'!=')
-    tags: [maven, check]
+    register: octools_curr_version
+    failed_when: octools_curr_version.stdout|version_compare(bundle.version + '+' + bundle.sha, '!=')
+    tags: [octools, check]

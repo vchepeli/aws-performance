@@ -1,4 +1,8 @@
 ---
+bundle_archive_ext: '.zip'
+bundle_platform:
+bundle_archive_extra_opts:
+
 jmeter_installation_default_dir: '{{ software_install_dir}}/{{ software_name }}/default'
 jmeter_installation_default_bin: "{{ jmeter_installation_default_dir }}/bin"
 jmeter_installation_default_lib: "{{ jmeter_installation_default_dir }}/lib"

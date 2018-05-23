@@ -1,0 +1,4 @@
+---
+#https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-zabbix-to-securely-monitor-remote-servers-on-centos-7
+#https://www.howtoforge.com/tutorial/centos-zabbix-system-monitoring/
+zabbix_repo_download_url: '{{ zabbix.mirror }}/{{ zabbix.version }}/rhel/{{ rhel_version }}/{{ zabbix.arch }}/{{ zabbix.name }}-{{ zabbix.version }}-{{ zabbix.suffix }}{{ zabbix.ext }}'

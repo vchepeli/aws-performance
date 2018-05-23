@@ -1,0 +1,12 @@
+---
+rhel_version: 7
+
+zabbix:
+  name: zabbix-release
+  mirror: http://repo.zabbix.com/zabbix
+  version: 3.0
+  arch: x86_64
+  suffix: 1.el7.noarch
+  ext: .rpm
+
+zabbix_package_name: zabbix-sender

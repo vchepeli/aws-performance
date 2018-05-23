@@ -1,0 +1,18 @@
+---
+- name: 'Ensure ZABBIX repo installed'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: '{{ zabbix_repo_download_url }}'
+    state: present
+  become: yes
+  no_log: True
+  tags: [zabbix, repo]
+
+- name: 'Ensure {{ zabbix_package_name }} installed'
+  action: '{{ ansible_pkg_mgr }}'
+  args:
+    name: '{{ zabbix_package_name }}'
+    state: present
+  become: yes
+  no_log: True
+  tags: [zabbix, packages]
