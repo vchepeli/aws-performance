@@ -1,6 +1,35 @@
 ---
+#https://aws.amazon.com/ec2/pricing/on-demand/
 ec2_region: eu-central-1
-ec2_instance_type: t2.large
-ec2_instance_count: 4
+ec2_slave_type: t2.large
+ec2_master_type: t2.medium
+ec2_master_count: 2
+ec2_slave_count: 4
 ec2_enabled: yes
-ec2_key_name: ec2-perf
+ec2_key_name: mperf-sshkey
+
+ec2_master_sec_group:
+  - mperf-ssh
+  - mperf-jmeter
+  - mperf-psql-5432
+  - mperf-psql-5433
+  - mperf-web-80
+  - mperf-web-443
+  - mperf-web-8080
+  - mperf-web-8089
+  - mperf-locust-5557
+  - mperf-locust-5558
+  - mperf-outbound
+
+ec2_slave_sec_group:
+  - mperf-ssh
+  - mperf-jmeter
+  - mperf-psql-5432
+  - mperf-psql-5433
+  - mperf-web-80
+  - mperf-web-443
+  - mperf-web-8080
+  - mperf-web-8089
+  - mperf-locust-5557
+  - mperf-locust-5558
+  - mperf-outbound

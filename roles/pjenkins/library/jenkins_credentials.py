@@ -94,6 +94,7 @@ def _jenkins_credentials(jenkins_url=None, username=None, password=None, **kwarg
 
   return result
 
+
 if __name__ == '__main__':
   global module
   module = AnsibleModule(

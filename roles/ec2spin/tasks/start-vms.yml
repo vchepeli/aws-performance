@@ -4,36 +4,58 @@
     architecture: x86_64
     name: 'CentOS Linux 7*EBS*'
     region: '{{ ec2_region }}'
-    sort: creationDate
-    sort_order: descending
+    sort: 'creationDate'
+    sort_order: 'descending'
     sort_end: 1
     no_result_action: fail
   register: centos_ami_find
 
-- name: 'Start Centos instances'
+- name: 'Start EC2 master instances'
   ec2:
     region: '{{ ec2_region }}'
     image: '{{ centos_ami_find.results[0].ami_id }}'
-    instance_type: '{{ ec2_instance_type }}'
+    instance_type: '{{ ec2_master_type }}'
     key_name: '{{ ec2_key_name }}'
-    group: [jmeter, ssh, outbound]
-    instance_tags: {Name: mperf1, type: performance, env: testing}
-    exact_count: '{{ ec2_instance_count }}'
+    instance_tags: {Name: mperf-master, type: performance, env: testing}
+    exact_count: '{{ ec2_master_count }}'
     count_tag: {type: performance}
     wait: yes
-  register: ec2
+    group: '{{ ec2_master_sec_group }}'
+  register: ec2_masters
 
-- name: 'Add Centos instances to group'
-  add_host:
-    hostname: '{{ item.public_dns_name }}'
-    groups: performance
-  with_items: '{{ ec2.tagged_instances }}'
-  when: item.public_dns_name is defined
+- name: 'Start EC2 slave instances'
+  ec2:
+    region: '{{ ec2_region }}'
+    image: '{{ centos_ami_find.results[0].ami_id }}'
+    instance_type: '{{ ec2_slave_type }}'
+    key_name: '{{ ec2_key_name }}'
+    instance_tags: {Name: mperf-slave, type: performance, env: testing}
+    exact_count: '{{ ec2_slave_count }}'
+    count_tag: {type: performance}
+    wait: yes
+    group: '{{ ec2_slave_sec_group }}'
+  register: ec2_slaves
 
 - name: 'Wait for SSH server to be running'
   wait_for:
     host: '{{ item.public_dns_name }}'
     port: 22
     search_regex: OpenSSH
-  with_items: '{{ ec2.tagged_instances }}'
+  with_items:
+    - '{{ ec2_masters.tagged_instances }}'
+    - '{{ ec2_slaves.tagged_instances }}'
+  when: item.public_dns_name is defined
+
+- name: 'Add EC2 master instances to masters group'
+  add_host:
+    hostname: '{{ item.public_dns_name }}'
+    groups: 'masters'
+  with_items: '{{ ec2_masters.tagged_instances }}'
+  when: item.public_dns_name is defined
+
+- name: 'Add EC2 slave instances to slaves group'
+  add_host:
+    hostname: '{{ item.public_dns_name }}'
+    groups: 'slaves'
+  with_items: '{{ ec2_slaves.tagged_instances }}'
   when: item.public_dns_name is defined

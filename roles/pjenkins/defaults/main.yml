@@ -17,4 +17,5 @@ jenkins_slave_port: 22
 jenkins_slave_labels:
   - ec2-perf
   - mobile
-jenkins_slave_credentials_id: master-ssh
+jenkins_slave_credentials_id: mperf-sshkey
+jenkins_sshkey_passphrase: "{{ vault_jenkins_sshkey_passphrase|default('') }}"

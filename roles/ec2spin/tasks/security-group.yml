@@ -10,10 +10,17 @@
         to_port: '{{ item.port }}'
         cidr_ip: 0.0.0.0/0
   with_items:
-    - {name: mperf-jmeter, description: Allow Remote Method Invocation (RMI) access, proto: tcp, port: 1099}
-    - {name: mperf-ssh, description: Allow SSH access, proto: tcp, port: 22}
+    - {name: mperf-ssh, description: Allow ssh access, proto: tcp, port: 22}
+    - {name: mperf-jmeter, description: Allow jmeter access, proto: tcp, port: 1099}
+    - {name: mperf-psql-5432, description: Allow psql access, proto: tcp, port: 5432}
+    - {name: mperf-psql-5433, description: Allow psql access, proto: tcp, port: 5433}
+    - {name: mperf-web-80, description: Allow web access, proto: tcp, port: 80}
+    - {name: mperf-web-443, description: Allow web access, proto: tcp, port: 443}
+    - {name: mperf-web-8080, description: Allow web access, proto: tcp, port: 8080}
+    - {name: mperf-web-8089, description: Allow web access, proto: tcp, port: 8089}
+    - {name: mperf-locust-5557, description: Allow locust.io access, proto: tcp, port: 5557}
+    - {name: mperf-locust-5558, description: Allow locust.io access, proto: tcp, port: 5558}
   tags: [ec2, sec-group]
-
 
 - name: Configure Outbound security group
   ec2_group:

@@ -12,6 +12,7 @@ def _jenkins_api(jenkins_url=None, username=None, password=None, command=None, a
     'msg': '',
     'rc': 1
   }
+
   server = jenkins.Jenkins(jenkins_url, username=username, password=password)
 
   if not hasattr(server, command):
@@ -34,6 +35,7 @@ def _jenkins_api(jenkins_url=None, username=None, password=None, command=None, a
   result['rc'] = 0
 
   return result
+
 
 if __name__ == '__main__':
   global module
