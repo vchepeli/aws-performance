@@ -2,5 +2,6 @@
 .vscode/
 *.retry
 .password
+.openrc*
 .idea/
 hosts

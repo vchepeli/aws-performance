@@ -1,0 +1,8 @@
+---
+#TODO path should be relative if user uses linux or mac
+- name: Upload SSH {{ os_key_name }} keypair
+  os_keypair:
+#    cloud: '{{ os_cloud_name }}'
+    name:  '{{ os_key_name }}'
+    public_key_file: '/Users/vchepeli/.ssh/ec2.centos.pub'
+    state: present

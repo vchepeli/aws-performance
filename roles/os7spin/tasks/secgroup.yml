@@ -1,0 +1,18 @@
+---
+- name: Create {{ os_security_group }} security group
+  os_security_group:
+#    cloud: '{{ os_cloud_name }}'
+    name: '{{ os_security_group }}'
+    verify: false
+    state: present
+
+- name: Create rules for {{ os_security_group }} security group
+  os_security_group_rule:
+#    cloud: '{{ os_cloud_name }}'
+    security_group: '{{ os_security_group }}'
+    protocol: '{{ item.value.proto }}'
+    port_range_min: '{{ item.value.port_range_min }}'
+    port_range_max: '{{ item.value.port_range_max }}'
+    remote_ip_prefix: '{{ item.value.remote_ip_prefix }}'
+    verify: false
+  with_dict: '{{ os_security_rules }}'

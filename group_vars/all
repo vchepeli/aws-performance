@@ -4,6 +4,7 @@ software_install_dir: /opt
 user_binaries: /usr/local/bin
 
 ec2_enabled: no
+os7_enabled: yes
 jmeter_enabled: yes
 docker_enabled: yes
 

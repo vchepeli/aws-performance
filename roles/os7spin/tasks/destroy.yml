@@ -1,0 +1,39 @@
+---
+- name: Destroy master Instances
+  os_server:
+#    cloud: "{{ os_cloud_name }}"
+    name: "{{ os_master_prefix }}{{ item }}"
+    state: absent
+  with_sequence:
+    count={{ os_masters_count }}
+
+- name: Destroy slave Instances
+  os_server:
+#    cloud: "{{ os_cloud_name }}"
+    name: "{{ os_slave_prefix }}{{ item }}"
+    state: absent
+  with_sequence:
+    count={{ os_slaves_count }}
+
+# TODO Delete SSH key pair
+
+# TODO Delete security group
+
+# TODO Delete router
+#- os_router:
+#    cloud: mycloud
+#    state: absent
+#    name: router1
+
+# Delete a subnet
+#- os_subnet:
+#    cloud: '{{ os_cloud_name }}'
+#    name: net1subnet
+#    state: absent
+
+#TODO Delete network
+#  os_network:
+#    cloud: '{{ os_cloud_name }}'
+#    name: '{{ os_net_name_priv }}'
+#    provider_network_type: vlan
+#    state: absent

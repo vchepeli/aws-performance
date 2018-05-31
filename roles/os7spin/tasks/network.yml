@@ -1,0 +1,38 @@
+---
+- name: Create private {{ os_net_name_priv }} network
+  os_network:
+#    cloud: '{{ os_cloud_name }}'
+    name: '{{ os_net_name_priv }}'
+#    provider_network_type: vlan
+    external: false
+    shared: false
+    verify: false
+    state: present
+  register: os_mperf_network_priv
+
+- name: Create private {{ os_subnet_name_priv }} subnet
+  os_subnet:
+#    cloud: '{{ os_cloud_name }}'
+    network_name: "{{ os_mperf_network_priv.id }}"
+    name: '{{ os_subnet_name_priv }}'
+    ip_version: 4
+    cidr: 192.168.1.0/24
+    gateway_ip: 192.168.1.1
+    enable_dhcp: yes
+    verify: false
+    state: present
+    dns_nameservers:
+      - 8.8.8.8
+      - 8.8.4.4
+  register: os_mperf_subnet_priv
+
+#TODO network ID should be added to vars
+- name: Create router for {{ os_net_name_priv }} network
+  os_router:
+#    cloud: '{{ os_cloud_name }}'
+    name: '{{ os_router_name }}'
+    network: 'c29a0c92-6721-4e83-b9b4-d1a2c7d11495'
+    interfaces:
+      - '{{ os_subnet_name_priv }}'
+    verify: false
+    state: present

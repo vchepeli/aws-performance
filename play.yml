@@ -1,47 +1,41 @@
 ---
-- name: Launch EC2 instances
+- name: Create && Launch VMs
   hosts: localhost
-  become: yes
-  become_user: "{{lookup('env','USER')}}"
+  gather_facts: false
   vars:
     current_user: "{{lookup('env','USER')}}"
   roles:
-    - ec2
+    - os7spin
   tasks:
-    - name: include OS specific variables
-      include_vars: roles/jmeter/defaults/main.yml
-    - include: roles/jmeter/tasks/install.yml
-    - include: roles/jmeter/tasks/plugins.yml
-    - include: roles/jmeter/tasks/config.yml
-
-- name: Install Jenkins slave and connect
-  hosts: performance
-  gather_facts: true
-  roles:
-   - jenkins
-
-- name: Add EC2 instances to Jenkins master
-  hosts: localhost
-  become: yes
-  become_user: "{{lookup('env','USER')}}"
-  environment:
-    PYTHONHTTPSVERIFY: 0
-  vars:
-    current_user: "{{lookup('env','USER')}}"
-  vars_files: 
-    - secret.yml
-  roles:
-    - pjenkins
+    - include_role: name=gatling
+    - include_role: name=jmeter
+    - include_role: name=octools
 
 - name: Install Performance Tooling
-  hosts: performance
-  become: yes
-  become_user: '{{jenkins_user_name}}'
+  hosts: masters:slaves
   gather_facts: true
-  vars: 
-    current_user: '{{jenkins_user_name}}'
+  vars:
+    current_user: jenkins
+#    current_user: '{{ jenkins.user.name }}'
   roles:
-    - role: oh-my-zsh
-    - role: jmeter
-    - role: gatling
-    - role: maven
+    - system
+    - joracle
+    - jenkins
+    - ohmyzsh
+    - maven
+    - locust
+    - zabbix
+    - docker
+    - octools
+    - gatling
+    - jmeter
+
+#- name: Add EC2 instances to Jenkins master
+#  hosts: localhost
+#  gather_facts: false
+#  environment:
+#    PYTHONHTTPSVERIFY: 0
+#  vars_files:
+#    - secret.yml
+#  roles:
+#    - pjenkins
