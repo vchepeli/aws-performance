@@ -1,0 +1,21 @@
+---
+#TODO pip install shade!!!
+
+- when: os7_enabled
+  block:
+  - include_tasks: network.yml
+    tags: [oc7, network]
+
+#TODO take image from Images or download new one
+#  - include_tasks: image.yml
+#    tags: [oc7, image]
+
+  - include_tasks: secgroup.yml
+    tags: [oc7, security]
+
+  - include_tasks: sshkey.yml
+    tags: [oc7, sshkey]
+
+  - include_tasks: deploy.yml
+    tags: [oc7, deploy]
+  # block

@@ -1,0 +1,23 @@
+---
+#TODO add image to default variables
+- name: Download CentOS-7-x86_64-GenericCloud-1804_02
+  get_url:
+    url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1804_02.qcow2
+    dest: /tmp/CentOS-7-x86_64-GenericCloud-1804_02.qcow2
+
+#TODO wait until image is active
+- name: Ensure CentOS-7-x86_64-GenericCloud-1804_02 Image Exists
+  os_image:
+#    cloud: '{{ os_cloud_name }}'
+    name: '{{ os_image_name }}'
+    container_format: bare
+    disk_format: qcow2
+    filename: /tmp/CentOS-7-x86_64-GenericCloud-1804_02.qcow2
+    min_ram: 1024
+    min_disk: 10
+    properties:
+      cpu_arch: x86_64
+    timeout: 600
+    verify: false
+    wait: yes
+    state: present

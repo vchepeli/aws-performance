@@ -1,0 +1,75 @@
+
+ec2_enabled: yes
+
+slave_os_type: rhel
+host_facts:
+  user_name: centos
+  connection_port: 22
+  connection_type: ssh
+
+oc_prefix: 'mperf-'
+os_cloud_name: mwqa
+os_masters_count: 2
+os_master_flavor: m1.large
+os_slaves_count: 5
+os_slave_flavor: m1.medium
+#TODO image name should be image ID
+os_image_name: 'd1b458f6-245d-4b62-9035-07629fbd7081'
+os_master_prefix: '{{ oc_prefix }}master'
+os_slave_prefix: '{{ oc_prefix }}slave'
+os_key_name: '{{ oc_prefix }}sshkey'
+os_net_name_priv: '{{ oc_prefix }}net1-private'
+os_subnet_name_priv: '{{ oc_prefix }}subnet1-private'
+os_router_name: '{{ oc_prefix }}router1'
+
+os_security_group: '{{ oc_prefix }}sec-group1'
+os_security_rules:
+  ssh:
+    name: '{{ oc_prefix }}ssh'
+    description: Allow SSH access
+    proto: tcp
+    port_range_min: 22
+    port_range_max: 22
+    remote_ip_prefix: 0.0.0.0/0
+  jmeter:
+    name: '{{ oc_prefix }}jmeter'
+    description: Allow JMeter access
+    proto: tcp
+    port_range_min: 1099
+    port_range_max: 1099
+    remote_ip_prefix: 0.0.0.0/0
+  psql:
+    name: '{{ oc_prefix }}psql'
+    description: Allow PSQL access
+    proto: tcp
+    port_range_min: 5432
+    port_range_max: 5433
+    remote_ip_prefix: 0.0.0.0/0
+  http:
+    name: '{{ oc_prefix }}web-def'
+    description: Allow HTTP access
+    proto: tcp
+    port_range_min: 80
+    port_range_max: 80
+    remote_ip_prefix: 0.0.0.0/0
+  https:
+    name: '{{ oc_prefix }}web-ssl'
+    description: Allow HTTPs access
+    proto: tcp
+    port_range_min: 443
+    port_range_max: 443
+    remote_ip_prefix: 0.0.0.0/0
+  jboss:
+    name: '{{ oc_prefix }}web-dev'
+    description: Allow JBoss access
+    proto: tcp
+    port_range_min: 8080
+    port_range_max: 8089
+    remote_ip_prefix: 0.0.0.0/0
+  locust:
+    name: '{{ oc_prefix }}locust'
+    description: Allow locust.io access
+    proto: tcp
+    port_range_min: 5557
+    port_range_max: 5558
+    remote_ip_prefix: 0.0.0.0/0
