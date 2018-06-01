@@ -1,11 +1,14 @@
 ---
 system_packages:
+  - bc
   - ca-certificates
   - curl
   - git
+  - gnu-free-mono-fonts
+  - gnu-free-sans-fonts
+  - gnu-free-serif-fonts
   - gnuplot
   - epel-release
-  - git
   - mc
   - ntp
   - net-tools
@@ -15,3 +18,4 @@ system_packages:
   - unzip
   - vim
   - wget
+  - zip
