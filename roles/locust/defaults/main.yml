@@ -2,6 +2,7 @@
 pip_packages:
   - grip
   - locustio
+  - selenium
 
 epel_packages:
   - chromium
