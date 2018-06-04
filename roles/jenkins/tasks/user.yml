@@ -1,20 +1,36 @@
 ---
-- name: 'Ensure Jenkins user'
+- name: 'Create Jenkins user'
   user:
     name: '{{ jenkins.user.name }}'
     home: '{{ jenkins.user.home }}'
     shell: /bin/bash
     state: present
+  become: yes
 
 - name: 'Add master public key to authorized keys'
   authorized_key:
     user: '{{ jenkins.user.name }}'
     key: '{{ item }}'
-  with_file: ~/.ssh/ec2.jenkins.pub
+    state: present
+  become: yes
+  with_file: '{{ lookup("env","HOME") + "/.ssh/ec2.jenkins.pub" }}'
+  no_log: False if debug else True
 
 - name: 'Update authorized_keys rights'
   file: 
     path: '{{ jenkins.user.home }}/.ssh/authorized_keys'
     state: file
     mode: 0600 
-    owner: jenkins
+    owner: '{{ jenkins.user.name }}'
+  become: yes
+
+#TODO Check if jenkins super need root access
+#- name: Make Jenkins user sudoer
+#  lineinfile:
+#    dest: /etc/sudoers
+#    state: present
+#    line: '{{ jenkins.user.name }}	ALL=(ALL:ALL) NOPASSWD:ALL'
+#    validate: 'visudo -cf %s'
+#  become: yes
+#  changed_when: False
+#  tags: [jenkins, user]

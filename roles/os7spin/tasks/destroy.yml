@@ -15,17 +15,19 @@
   with_sequence:
     count={{ os_slaves_count }}
 
-# TODO Delete SSH key pair
+#TODO Delete SSH key pair
 
-# TODO Delete security group
+#TODO Delete security group
 
-# TODO Delete router
+#TODO Delete floating IPS
+
+#TODO Delete router
 #- os_router:
 #    cloud: mycloud
 #    state: absent
 #    name: router1
 
-# Delete a subnet
+#TODO Delete a subnet
 #- os_subnet:
 #    cloud: '{{ os_cloud_name }}'
 #    name: net1subnet

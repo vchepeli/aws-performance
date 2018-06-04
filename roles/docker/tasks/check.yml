@@ -6,3 +6,4 @@
   register: docker_bridge_network_addr
 
 - debug: var=docker_bridge_network_addr.stdout
+  when: debug

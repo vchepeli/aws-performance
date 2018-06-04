@@ -26,5 +26,5 @@
     changed_when: False
     ignore_errors: yes
     register: maven_curr_version
-    failed_when: maven_curr_version.stdout|version_compare(bundle.version,'!=')
+    failed_when: maven_curr_version.stdout is version_compare(bundle.version,'!=')
     tags: [maven, check]

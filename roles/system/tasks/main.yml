@@ -5,7 +5,7 @@
     name: '*'
     state: latest
   become: yes
-  no_log: True
+  no_log: False if debug else True
   tags: [system, packages]
 
 - name: 'Ensure SYSTEM packages installed'
@@ -15,7 +15,7 @@
     state: latest
   become: yes
   with_items: '{{ system_packages }}'
-  no_log: True
+  no_log: False if debug else True
   tags: [system, packages]
 
 - name: 'Ensure EPEL packages installed'
@@ -25,7 +25,7 @@
     state: latest
   become: yes
   with_items: '{{ epel_packages }}'
-  no_log: True
+  no_log: False if debug else True
   tags: [system, packages]
 
 - name: 'Ensure the NTP service is running and enabled'
@@ -97,34 +97,22 @@
   shell: pip --version | awk '{print $2}'
   changed_when: False
   register: pip_curr_version
-  failed_when: pip_curr_version.stdout|version_compare(system_pip_version,'<')
+  failed_when: pip_curr_version.stdout is version_compare(system_pip_version,'<')
   tags: [system, pip]
 
 - debug: var=pip_curr_version
+  when: debug
 
-#TODO
-#- name: Create /etc/hosts file
-#  template:
-#    src: hosts.j2
-#    dest: /etc/hosts
-#    owner: root
-#    group: root
-#    mode: 0644
-#  become: yes
-#  tags: [system, hosts]
+- name: Create /etc/hosts file
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    mode: 0644
+  become: yes
+  tags: [system, hosts]
 
-#- name: Ensure hostname is the same of the inventory
-#  hostname:
-#    name: '{{ inventory_hostname }}'
-#  become: yes
-#  tags: [system, hostname]
-
-#- name: Make Jenkins user sudoer
-#  lineinfile:
-#    dest: /etc/sudoers
-#    state: present
-#    line: '{{ jenkins.user.name }}	ALL=(ALL:ALL) NOPASSWD:ALL'
-#    validate: 'visudo -cf %s'
-#  become: yes
-#  changed_when: False
-#  tags: [jenkins, user]
+- name: Ensure hostname is the same of the inventory
+  hostname:
+    name: '{{ inventory_hostname }}'
+  become: yes
+  tags: [system, hostname]

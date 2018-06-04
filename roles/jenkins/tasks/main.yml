@@ -1,6 +1,5 @@
 ---
 - include_tasks: user.yml
-  become: yes
   tags: [jenkins, user]
 
 - name: 'Ensure correct java version selected'

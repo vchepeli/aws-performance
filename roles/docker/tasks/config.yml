@@ -5,14 +5,17 @@
     create: yes
     state: present
     line: '{{ docker_sysconfig_options }}'
+  become: yes
 
 - name: Creates directory
   file:
     path: /etc/docker
     state: directory
+  become: yes
 
 - name: 'Adding insecure registry to daemon'
   template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
     mode: 0644
+  become: yes

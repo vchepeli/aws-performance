@@ -18,12 +18,20 @@ os_image_name: 'd1b458f6-245d-4b62-9035-07629fbd7081'
 os_master_prefix: '{{ oc_prefix }}master'
 os_slave_prefix: '{{ oc_prefix }}slave'
 os_key_name: '{{ oc_prefix }}sshkey'
-os_net_name_priv: '{{ oc_prefix }}net1-private'
+#os_net_name_priv: '{{ oc_prefix }}net1-private'
+os_net_name_priv: 'mobile-jenkins'
 os_subnet_name_priv: '{{ oc_prefix }}subnet1-private'
 os_router_name: '{{ oc_prefix }}router1'
 
 os_security_group: '{{ oc_prefix }}sec-group1'
 os_security_rules:
+  icmp:
+    name: '{{ oc_prefix }}icmp'
+    description: Allow ICMP access
+    proto: icmp
+    port_range_min: -1
+    port_range_max: -1
+    remote_ip_prefix: 0.0.0.0/0
   ssh:
     name: '{{ oc_prefix }}ssh'
     description: Allow SSH access

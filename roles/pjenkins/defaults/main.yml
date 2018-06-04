@@ -1,8 +1,8 @@
 ---
 jenkins:
   user:
-    name: jenkins
-    home: /var/lib/jenkins
+    name: 'jenkins'
+    home: '/var/lib/jenkins'
 # Jenkins master credentials
 jenkins_admin_username: "{{ vault_jenkins_username|default('admin') }}"
 jenkins_admin_password: "{{ vault_jenkins_password|default('admin') }}"

@@ -15,7 +15,7 @@
   args: 
     chdir: '{{ jmeter_installation_default_dir }}'
   become: yes
-  changed_when: jmeter_plugins_manager_download|changed
+  changed_when: jmeter_plugins_manager_download is changed
   tags: [jmeter, plugins]
 
 - name: 'Check PluginsManagerCMD.{sh,bat} located in {{ jmeter_installation_default_bin }}'

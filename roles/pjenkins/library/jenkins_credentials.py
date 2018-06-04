@@ -51,7 +51,7 @@ if (!updated) {{
 """  # noqa
 
 
-def render_create_credentials_script(kwargs):
+def _render_create_credentials_script(kwargs):
   return create_credential_groovy.format(
     name=kwargs['name'],
     cls=kwargs['cls'],
@@ -74,7 +74,7 @@ def _jenkins_credentials(jenkins_url=None, username=None, password=None, **kwarg
 
   server = jenkins.Jenkins(jenkins_url, username, password)
 
-  groovy = render_create_credentials_script(**kwargs)
+  groovy = _render_create_credentials_script(**kwargs)
   result['cmd'] += ' {}'.format(groovy)
 
   try:

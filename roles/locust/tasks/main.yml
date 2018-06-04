@@ -1,11 +1,15 @@
 ---
+#TODO Found existing installation: requests 2.6.0\n\n:stderr: Cannot uninstall 'requests'
+#git diIt is a distutils installed project and thus we cannot accurately determine which files
+#belong to it which would lead to only a partial uninstall
 - name: 'Ensure PIP packages installed'
   pip:
     name: '{{ item }}'
     state: latest
+    extra_args: -I 
   become: yes
   with_items: '{{ pip_packages }}'
-  no_log: True
+  no_log: False if debug else True
   tags: [locust, pip]
 
 - name: 'Ensure EPEL packages installed'
@@ -15,5 +19,5 @@
     state: latest
   become: yes
   with_items: '{{ epel_packages }}'
-  no_log: True
-  tags: [locust, packages]
+  no_log: False if debug else True
+  tags: [locust, epel]

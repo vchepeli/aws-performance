@@ -1,0 +1,10 @@
+[masters]
+mperf-master1 ansible_host=10.8.251.227
+mperf-master2 ansible_host=10.8.252.228
+
+[slaves]
+mperf-slave1 ansible_host=10.8.251.136
+mperf-slave2 ansible_host=10.8.251.11
+mperf-slave3 ansible_host=10.8.250.164
+mperf-slave4 ansible_host=10.8.250.31
+mperf-slave5 ansible_host=10.8.251.239

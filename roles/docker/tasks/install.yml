@@ -7,6 +7,7 @@
     gpgkey: '{{ item.gpgkey }}'
     gpgcheck: '{{ item.gpgcheck }}'
     enabled: '{{ item.enabled }}'
+  become: yes
   with_items: '{{ docker_yum_repos }}'
 
 - name: 'Install DockerCE dependencies'
@@ -14,14 +15,16 @@
   args:
     name: '{{ item }}'
     state: latest
+  become: yes
   with_items: '{{ docker_required_packages }}'
-  no_log: True
+  no_log: False if debug else True
 
 - name: 'Install docker-ce version'
   action: '{{ ansible_pkg_mgr }}'
   args:
     name: 'docker-ce'
     state: latest
+  become: yes
 
 - name: 'Add {{ user_name.stdout }} to docker group'
   user:
@@ -29,6 +32,7 @@
     groups:
       - docker
     append: yes
+  become: yes
   register: docker_group_add
 #  notify:
 #    - 'Kill SSH sessions'

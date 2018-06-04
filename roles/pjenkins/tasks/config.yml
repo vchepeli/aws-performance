@@ -8,12 +8,11 @@
       name: '{{ jenkins_slave_credentials_id }}'
       cls: '{{ ssh_credentials_package }}.BasicSSHUserPrivateKey'
       keyCls: '{{ ssh_credentials_package }}.BasicSSHUserPrivateKey.DirectEntryPrivateKeySource'
-      keyFile: '{{ item }}'
+      keyFile: '{{ lookup("env","HOME") + "/.ssh/ec2.jenkins" }}'
       userName: '{{ jenkins.user.name }}'
       passphrase: '{{ jenkins_sshkey_passphrase }}'
       description: 'EC2 Performance VMs'
-  with_file: ~/.ssh/ec2.jenkins
-  no_log: True
+  no_log: False if debug else True
 
 - name: 'Check Jenkins existing EC2 masters'
   jenkins_api:
@@ -24,11 +23,12 @@
     args:
       - 'mperf-master{{ item.ami_launch_index }}'
   when: item.public_dns_name is defined
-  with_items: groups.masters
-  register: ec2_existed_masters
-  no_log: True
+  with_items: '{{ groups.masters }}'
+  register: jenkins_existed_masters
+  no_log: False if debug else True
 
-- debug: var=ec2_existed_masters
+- debug: var=jenkins_existed_masters
+  when: debug
 
 - name: 'Check Jenkins existing EC2 slaves'
   jenkins_api:
@@ -40,10 +40,11 @@
       - 'mperf-slave{{ item.ami_launch_index }}'
   when: item.public_dns_name is defined
   with_items: groups.slaves
-  register: ec2_existed_slaves
-  no_log: True
+  register: jenkins_existed_slaves
+  no_log: False if debug else True
 
-- debug: var=ec2_existed_slaves
+- debug: var=jenkins_existed_slaves
+  when: debug
 
 - name: 'Delete Jenkins existing EC2 masters'
   jenkins_api:
@@ -54,10 +55,10 @@
     args:
       - 'mperf-master{{ slave.item.ami_launch_index }}'
   when: slave.node_exists
-  with_items: '{{ ec2_existed_masters.results }}'
+  with_items: '{{ jenkins_existed_masters.results }}'
   loop_control:
     loop_var: slave
-  no_log: True
+  no_log: False if debug else True
 
 - name: 'Delete Jenkins existing EC2 slaves'
   jenkins_api:
@@ -68,10 +69,10 @@
     args:
       - 'mperf-slave{{ slave.item.ami_launch_index }}'
   when: slave.node_exists
-  with_items: '{{ ec2_existed_slaves.results }}'
+  with_items: '{{ jenkins_existed_slaves.results }}'
   loop_control:
     loop_var: slave
-  no_log: True
+  no_log: False if debug else True
 
 - name: 'Create Jenkins EC2 master nodes'
   jenkins_api:
@@ -96,7 +97,7 @@
   with_items: groups.masters
   loop_control:
     loop_var: slave
-  no_log: True
+  no_log: False if debug else True
 
 - name: 'Create Jenkins EC2 slave nodes'
   jenkins_api:
@@ -121,4 +122,4 @@
   with_items: groups.slaves
   loop_control:
     loop_var: slave
-  no_log: True
+  no_log: False if debug else True

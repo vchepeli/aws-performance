@@ -27,5 +27,5 @@
     changed_when: False
     ignore_errors: yes
     register: octools_curr_version
-    failed_when: octools_curr_version.stdout|version_compare(bundle.version + '+' + bundle.sha, '!=')
+    failed_when: octools_curr_version.stdout is version_compare(bundle.version + '+' + bundle.sha, '!=')
     tags: [octools, check]

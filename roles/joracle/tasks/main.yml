@@ -15,5 +15,5 @@
     changed_when: False
     ignore_errors: yes
     register: java_curr_version
-    failed_when: java_curr_version.stdout|version_compare(joracle_version_string,'!=')
+    failed_when: java_curr_version.stdout is version_compare(joracle_version_string,'!=')
     tags: [joracle, check]

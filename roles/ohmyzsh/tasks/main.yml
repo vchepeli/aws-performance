@@ -11,7 +11,7 @@
   git:
     repo: git://github.com/robbyrussell/oh-my-zsh.git
     dest: ~/.oh-my-zsh
-  become_user: '{{ current_user }}'
+  become_user: '{{ current_username }}'
   become: yes
   tags: [ohmyzsh, install]
 
@@ -20,13 +20,13 @@
     src: ~/.oh-my-zsh/templates/zshrc.zsh-template
     dest: ~/.zshrc
     remote_src: yes
-  become_user: '{{ current_user }}'
+  become_user: '{{ current_username }}'
   become: yes
   tags: [ohmyzsh, config]
 
 - name: Set zsh as default shell
   user:
-    name: '{{ current_user }}'
+    name: '{{ current_username }}'
     shell: /usr/bin/zsh
   become: yes
   tags: [ohmyzsh, config]

@@ -10,5 +10,5 @@
     - { path: '{{ joracle_home_path }}/jre/bin', exe: 'keytool' }
     - { path: '{{ joracle_home_path }}/bin', exe: 'javac' }
     - { path: '{{ joracle_home_path }}/bin', exe: 'javadoc' }
-  when: joracle_set_default and joracle_task_rpm_install|changed
+  when: joracle_set_default and joracle_task_rpm_install is changed
   register: joracle_task_set_default

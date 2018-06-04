@@ -3,8 +3,10 @@
 
 - when: os7_enabled
   block:
-  - include_tasks: network.yml
-    tags: [oc7, network]
+
+#TODO cant ping FQDN but only IPS
+#  - include_tasks: network.yml
+#    tags: [oc7, network]
 
 #TODO take image from Images or download new one
 #  - include_tasks: image.yml

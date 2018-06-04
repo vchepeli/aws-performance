@@ -1,9 +1,10 @@
 ---
 - name: Create && Launch VMs
   hosts: localhost
-  gather_facts: false
+  gather_facts: yes
   vars:
-    current_user: "{{lookup('env','USER')}}"
+    current_username: '{{ lookup("env","USER") }}'
+    current_userhome: '{{ lookup("env","HOME") }}'
   roles:
     - os7spin
   tasks:
@@ -13,10 +14,9 @@
 
 - name: Install Performance Tooling
   hosts: masters:slaves
-  gather_facts: true
+  gather_facts: yes
   vars:
-    current_user: jenkins
-#    current_user: '{{ jenkins.user.name }}'
+    current_username: 'jenkins'
   roles:
     - system
     - joracle

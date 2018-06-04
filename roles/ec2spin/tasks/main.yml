@@ -11,9 +11,8 @@
   - name: 'Add EC2 keypair'
     ec2_key:
       name: '{{ ec2_key_name }}'
-      key_material: '{{ item }}'
+      key_material: '{{ lookup("env","HOME") + "/.ssh/ec2.centos.pub" }}'
       region: '{{ ec2_region }}'
-    with_file: ~/.ssh/ec2.centos.pub
     tags: [ec2, keypair]
 
   - include_tasks: security-group.yml
