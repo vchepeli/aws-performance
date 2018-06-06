@@ -5,7 +5,7 @@
     name: '{{ zabbix_repo_download_url }}'
     state: present
   become: yes
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
   tags: [zabbix, repo]
 
 - name: 'Ensure {{ zabbix_package_name }} installed'
@@ -14,5 +14,5 @@
     name: '{{ zabbix_package_name }}'
     state: present
   become: yes
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
   tags: [zabbix, packages]

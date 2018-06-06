@@ -1,8 +1,7 @@
 ---
-#TODO path should be relative if user uses linux or mac
 - name: Upload SSH {{ os_key_name }} keypair
   os_keypair:
 #    cloud: '{{ os_cloud_name }}'
     name:  '{{ os_key_name }}'
-    public_key_file: "{{ lookup('env','HOME') + '/.ssh/ec2.centos.pub' }}"
+    public_key_file: '{{ whoami_home }}/.ssh/ec2.centos.pub'
     state: present

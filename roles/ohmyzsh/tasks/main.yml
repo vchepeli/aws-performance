@@ -10,23 +10,23 @@
 - name: Clone oh-my-zsh repo
   git:
     repo: git://github.com/robbyrussell/oh-my-zsh.git
-    dest: ~/.oh-my-zsh
-  become_user: '{{ current_username }}'
+    dest: '{{ tools_owner_home }}/.oh-my-zsh'
+  become_user: '{{ tools_owner_name }}'
   become: yes
   tags: [ohmyzsh, install]
 
 - name: Create a new zsh config
   copy:
-    src: ~/.oh-my-zsh/templates/zshrc.zsh-template
-    dest: ~/.zshrc
+    src: '{{ tools_owner_home }}/.oh-my-zsh/templates/zshrc.zsh-template'
+    dest: '{{ tools_owner_home }}/.zshrc'
     remote_src: yes
-  become_user: '{{ current_username }}'
+  become_user: '{{ tools_owner_name }}'
   become: yes
   tags: [ohmyzsh, config]
 
 - name: Set zsh as default shell
   user:
-    name: '{{ current_username }}'
+    name: '{{ tools_owner_name }}'
     shell: /usr/bin/zsh
   become: yes
   tags: [ohmyzsh, config]

@@ -1,0 +1,5 @@
+---
+jenkins:
+  user:
+    name: '{{ jenkins_user_name|mandatory }}'
+    home: '{{ jenkins_user_home|mandatory }}'

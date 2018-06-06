@@ -3,8 +3,7 @@
   hosts: localhost
   gather_facts: yes
   vars:
-    current_username: '{{ lookup("env","USER") }}'
-    current_userhome: '{{ lookup("env","HOME") }}'
+    whoami_home: '{{ lookup("env","HOME") }}'
   roles:
     - os7spin
   tasks:
@@ -16,7 +15,9 @@
   hosts: masters:slaves
   gather_facts: yes
   vars:
-    current_username: 'jenkins'
+    tools_owner_name: 'jenkins'
+    tools_owner_home: '/var/lib/jenkins'
+    whoami_home: '{{ lookup("env","HOME") }}'
   roles:
     - system
     - joracle
@@ -30,12 +31,12 @@
     - gatling
     - jmeter
 
-#- name: Add EC2 instances to Jenkins master
-#  hosts: localhost
-#  gather_facts: false
-#  environment:
-#    PYTHONHTTPSVERIFY: 0
-#  vars_files:
-#    - secret.yml
-#  roles:
-#    - pjenkins
+- name: Add VMs to Jenkins master
+  hosts: localhost
+  gather_facts: no
+  vars:
+    whoami_home: '{{ lookup("env","HOME") }}'
+  vars_files:
+    - secret.yml
+  roles:
+    - pjenkins

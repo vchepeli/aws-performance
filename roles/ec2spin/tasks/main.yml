@@ -11,7 +11,7 @@
   - name: 'Add EC2 keypair'
     ec2_key:
       name: '{{ ec2_key_name }}'
-      key_material: '{{ lookup("env","HOME") + "/.ssh/ec2.centos.pub" }}'
+      key_material: '{{ whoami_home }}/.ssh/ec2.centos.pub'
       region: '{{ ec2_region }}'
     tags: [ec2, keypair]
 

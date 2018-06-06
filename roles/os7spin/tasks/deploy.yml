@@ -6,7 +6,7 @@
     prefix: '{{ os_master_prefix }}'
     flavor: '{{ os_master_flavor }}'
     group: 'masters'
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
 
 - name: Wait for masters port 22 to be ready
   wait_for:
@@ -23,6 +23,7 @@
     line: '{{item}} ansible_host={{ hostvars[item].ansible_host }}'
     insertafter: '\[masters\]'
     state: present
+  changed_when: False
   with_items: '{{ groups["masters"] | reverse | list }}'
 
 - include_tasks: deploy1.yml
@@ -32,7 +33,7 @@
     prefix: '{{ os_slave_prefix }}'
     flavor: '{{ os_slave_flavor }}'
     group: 'slaves'
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
 
 - name: Wait for slaves port 22 to be ready
   wait_for:
@@ -49,4 +50,5 @@
     line: '{{item}} ansible_host={{ hostvars[item].ansible_host }}'
     insertafter: '\[slaves\]'
     state: present
+  changed_when: False
   with_items: '{{ groups["slaves"] | reverse | list }}'

@@ -35,7 +35,7 @@
     file:
       path: '{{ _bundle_install_dir_parent }}'
       state: directory
-      owner: '{{ current_username }}'
+      owner: '{{ tools_owner_name }}'
     become: yes
     when: not bundle_downloaded is skipped
 
@@ -43,14 +43,14 @@
     unarchive:
       src: '{{ tmp_dir_created.path }}/{{ _bundle_archive }}'
       dest: '{{ _bundle_install_dir_parent }}'
-      owner: '{{ current_username }}'
+      owner: '{{ tools_owner_name }}'
       creates: '{{ _bundle_install_dir_creates }}'
       copy: no
       extra_opts: '{{ bundle_archive_extra_opts }}'
     become: yes
     when: not bundle_downloaded is skipped
     register: bundle_extracted
-    no_log: False if debug else True
+    no_log: '{{ False if debug else True }}'
 
   - when: _bundle_unzip_strip_top
     block:
@@ -68,7 +68,7 @@
     file:
       src: '{{ _bundle_install_dir_ver }}'
       dest: '{{ _bundle_install_dir_default }}'
-      owner: '{{ current_username }}'
+      owner: '{{ tools_owner_name }}'
       state: link
       force: yes
     become: yes
@@ -79,7 +79,7 @@
     file:
       src: '{{ _bundle_install_dir_default }}/{{ _bundle_exec_path }}'
       dest: '{{ user_binaries }}/{{ software_name }}'
-      owner: '{{ current_username }}'
+      owner: '{{ tools_owner_name }}'
       state: link
       force: yes
     become: yes

@@ -16,65 +16,63 @@ store = Jenkins.instance.getExtensionList(
   'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
 )[0].getStore()
 
-credentials_new = new {cls}(
-  CredentialsScope.GLOBAL, '{name}',
+credsNew = new {userPrivateKey}(
+  CredentialsScope.GLOBAL, '{credentialsId}',
   '{userName}',
-  new {keyCls}('''{keyFile}'''),
-  '{passphrase}',
+  new {privateKeySource}('''{sshKeyText}'''),
+  '{sshKeyPassphrase}',
   '{description}'
 )
 
 creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-      {cls}.class, Jenkins.instance
+  {userPrivateKey}.class, Jenkins.instance
 );
 updated = false;
 
-for (credentials_current in creds) {{
+for (credsCurr in creds) {{
   // Comparison does not compare passwords but identity.
-  if (credentials_new == credentials_current) {{
-    store.removeCredentials(domain, credentials_current);
-    ret = store.addCredentials(domain, credentials_new)
+  if (credsNew == credsCurr) {{
+    store.removeCredentials(domain, credsCurr);
+    ret = store.addCredentials(domain, credsNew)
     updated = true;
-    println("OVERWRITTEN");
+    println('OVERWRITTEN');
     break;
   }}
 }}
 
 if (!updated) {{
-  ret = store.addCredentials(domain, credentials_new)
+  ret = store.addCredentials(domain, credsNew)
   if (ret) {{
-    println("CREATED");
+    println('CREATED');
   }} else {{
-    println("FAILED");
+    println('FAILED');
   }}
 }}
 """  # noqa
 
-
-def _render_create_credentials_script(kwargs):
+def _render_create_creds_groovy(kwargs):
   return create_credential_groovy.format(
-    name=kwargs['name'],
-    cls=kwargs['cls'],
+    credentialsId=kwargs['credentialsId'],
     userName=kwargs['userName'],
-    keyCls=kwargs['keyCls'],
-    keyFile=kwargs['keyFile'],
-    passphrase=kwargs['passphrase'],
-    description=kwargs['description']
+    description=kwargs['description'],
+    userPrivateKey=kwargs['userPrivateKey'],
+    privateKeySource=kwargs['privateKeySource'],
+    sshKeyText=kwargs['sshKeyText'],
+    sshKeyPassphrase=kwargs['sshKeyPassphrase']
   )
 
-
-def _jenkins_credentials(jenkins_url=None, username=None, password=None, **kwargs):
+def _jenkins_cli(jenkins_url=None, username=None, password=None, **kwargs):
   result = {
-    'cmd': jenkins_url,
+    'cmd': '{}'.format(jenkins_url),
     'changed': False,
     'failed': True,
-    'msg': '',
+    'msg': None,
     'rc': 1
   }
 
   server = jenkins.Jenkins(jenkins_url, username, password)
 
-  groovy = _render_create_credentials_script(**kwargs)
+  groovy = _render_create_creds_groovy(**kwargs)
   result['cmd'] += ' {}'.format(groovy)
 
   try:
@@ -87,7 +85,7 @@ def _jenkins_credentials(jenkins_url=None, username=None, password=None, **kwarg
     result['msg'] = e.message
     return result
 
-  result['jenkins_credentials'] = output
+  result['jenkins_cli'] = output
   result['changed'] = True
   result['failed'] = False
   result['rc'] = 0
@@ -102,9 +100,8 @@ if __name__ == '__main__':
       'jenkins_url': {'required': True},
       'username': {'required': True},
       'password': {'required': True},
-      # 'args': {'required': False, 'type': 'list'},
       'kwargs': {'required': False, 'type': 'dict'},
     },
     supports_check_mode=False
   )
-  module.exit_json(**_jenkins_credentials(**module.params))
+  module.exit_json(**_jenkins_cli(**module.params))

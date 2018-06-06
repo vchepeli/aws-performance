@@ -5,6 +5,7 @@
     create: yes
     state: present
     line: '{{ docker_sysconfig_options }}'
+  changed_when: False
   become: yes
 
 - name: Creates directory

@@ -1,125 +1,121 @@
 ---
-- name: 'Create Jenkins SSH credentials'
-  jenkins_credentials:
-    jenkins_url: '{{ jenkins_master_url }}'
-    username: '{{ jenkins_admin_username }}'
-    password: '{{ jenkins_admin_password }}'
+- name: 'Create SSH credentials'
+  jenkins_cli:
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
     kwargs:
-      name: '{{ jenkins_slave_credentials_id }}'
-      cls: '{{ ssh_credentials_package }}.BasicSSHUserPrivateKey'
-      keyCls: '{{ ssh_credentials_package }}.BasicSSHUserPrivateKey.DirectEntryPrivateKeySource'
-      keyFile: '{{ lookup("env","HOME") + "/.ssh/ec2.jenkins" }}'
+      credentialsId: '{{ jenkins.ssh.credentials.id }}'
       userName: '{{ jenkins.user.name }}'
-      passphrase: '{{ jenkins_sshkey_passphrase }}'
-      description: 'EC2 Performance VMs'
-  no_log: False if debug else True
+      description: '{{ jenkins.ssh.credentials.description }}'
+      userPrivateKey: '{{ jenkins.ssh.credentials.package }}.BasicSSHUserPrivateKey'
+      privateKeySource: '{{ jenkins.ssh.credentials.package }}.BasicSSHUserPrivateKey.DirectEntryPrivateKeySource'
+      sshKeyText: '{{ item }}'
+      sshKeyPassphrase: '{{ jenkins.ssh.key.passphrase }}'
+  with_file: '{{ whoami_home }}/.ssh/ec2.jenkins'
+  register: result
+  no_log: '{{ False if debug else True }}'
 
-- name: 'Check Jenkins existing EC2 masters'
+- name: 'Check existing Master nodes'
   jenkins_api:
-    jenkins_url: '{{ jenkins_master_url }}'
-    username: '{{ jenkins_admin_username }}'
-    password: '{{ jenkins_admin_password }}'
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
     command: node_exists
-    args:
-      - 'mperf-master{{ item.ami_launch_index }}'
-  when: item.public_dns_name is defined
-  with_items: '{{ groups.masters }}'
+    args: '{{ host }}'
+  with_items: '{{ groups["masters"] }}'
+  loop_control:
+    loop_var: host
   register: jenkins_existed_masters
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
 
 - debug: var=jenkins_existed_masters
   when: debug
 
-- name: 'Check Jenkins existing EC2 slaves'
+- name: 'Check existing Slave nodes'
   jenkins_api:
-    jenkins_url: '{{ jenkins_master_url }}'
-    username: '{{ jenkins_admin_username }}'
-    password: '{{ jenkins_admin_password }}'
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
     command: node_exists
-    args:
-      - 'mperf-slave{{ item.ami_launch_index }}'
-  when: item.public_dns_name is defined
-  with_items: groups.slaves
+    args: '{{ host }}'
+  with_items: '{{ groups["slaves"] }}'
+  loop_control:
+    loop_var: host
   register: jenkins_existed_slaves
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
 
 - debug: var=jenkins_existed_slaves
   when: debug
 
-- name: 'Delete Jenkins existing EC2 masters'
+- name: 'Delete existing Master nodes'
   jenkins_api:
-    jenkins_url: '{{ jenkins_master_url }}'
-    username: '{{ jenkins_admin_username }}'
-    password: '{{ jenkins_admin_password }}'
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
     command: delete_node
-    args:
-      - 'mperf-master{{ slave.item.ami_launch_index }}'
-  when: slave.node_exists
+    args: '{{ master.host }}'
+  when: master.node_exists
   with_items: '{{ jenkins_existed_masters.results }}'
   loop_control:
-    loop_var: slave
-  no_log: False if debug else True
+    loop_var: master
+  no_log: '{{ False if debug else True }}'
 
-- name: 'Delete Jenkins existing EC2 slaves'
+- name: 'Delete existing Slave nodes'
   jenkins_api:
-    jenkins_url: '{{ jenkins_master_url }}'
-    username: '{{ jenkins_admin_username }}'
-    password: '{{ jenkins_admin_password }}'
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
     command: delete_node
-    args:
-      - 'mperf-slave{{ slave.item.ami_launch_index }}'
+    args: '{{ slave.host }}'
   when: slave.node_exists
   with_items: '{{ jenkins_existed_slaves.results }}'
   loop_control:
     loop_var: slave
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
 
-- name: 'Create Jenkins EC2 master nodes'
+- name: 'Create new Master nodes'
   jenkins_api:
-    jenkins_url: '{{ jenkins_master_url }}'
-    username: '{{ jenkins_admin_username }}'
-    password: '{{ jenkins_admin_password }}'
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
     command: create_node
-    args:
-      - 'mperf-master{{ slave.item.ami_launch_index }}'
+    args: '{{ host }}'
     kwargs:
-      numExecutors: '{{ jenkins_slave_executors }}'
-      nodeDescription: '{{ jenkins_slave_description }}'
+      numExecutors: '{{ jenkins.slave.executors }}'
+      nodeDescription: '{{ jenkins.slave.description }}'
       remoteFS: '{{ jenkins.user.home }}'
-      labels: '{{ jenkins_slave_labels|join(" ") }}'
-      launcher: 'hudson.plugins.sshslaves.SSHLauncher'
+      labels: '{{ jenkins.slave.labels|join(" ") }} master'
+      launcher: '{{ jenkins.slave.launcher }}'
       launcher_params:
-        port: '{{ jenkins_slave_port }}'
+        port: '{{ jenkins.slave.port }}'
         username: '{{ jenkins.user.name }}'
-        credentialsId: '{{ jenkins_slave_credentials_id }}'
-        host: '{{ slave.item.public_dns_name }}'
-  when: slave.item.public_dns_name is defined
-  with_items: groups.masters
+        credentialsId: '{{ jenkins.ssh.credentials.id }}'
+        host: '{{ hostvars[host].ansible_host }}'
+  with_items: '{{ groups["masters"] }}'
   loop_control:
-    loop_var: slave
-  no_log: False if debug else True
+    loop_var: host
+  no_log: '{{ False if debug else True }}'
 
-- name: 'Create Jenkins EC2 slave nodes'
+- name: 'Create new Slave nodes'
   jenkins_api:
-    jenkins_url: '{{ jenkins_master_url }}'
-    username: '{{ jenkins_admin_username }}'
-    password: '{{ jenkins_admin_password }}'
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
     command: create_node
-    args:
-      - 'mperf-slave{{ slave.item.ami_launch_index }}'
+    args: '{{ host }}'
     kwargs:
-      numExecutors: '{{ jenkins_slave_executors }}'
-      nodeDescription: '{{ jenkins_slave_description }}'
+      numExecutors: '{{ jenkins.slave.executors }}'
+      nodeDescription: '{{ jenkins.slave.description }}'
       remoteFS: '{{ jenkins.user.home }}'
-      labels: '{{ jenkins_slave_labels|join(" ") }}'
-      launcher: 'hudson.plugins.sshslaves.SSHLauncher'
+      labels: '{{ jenkins.slave.labels|join(" ") }} slave'
+      launcher: '{{ jenkins.slave.launcher }}'
       launcher_params:
-        port: '{{ jenkins_slave_port }}'
+        port: '{{ jenkins.slave.port }}'
         username: '{{ jenkins.user.name }}'
-        credentialsId: '{{ jenkins_slave_credentials_id }}'
-        host: '{{ slave.item.public_dns_name }}'
-  when: slave.item.public_dns_name is defined
-  with_items: groups.slaves
+        credentialsId: '{{ jenkins.ssh.credentials.id }}'
+        host: '{{ hostvars[host].ansible_host }}'
+  with_items: '{{ groups["slaves"] }}'
   loop_control:
-    loop_var: slave
-  no_log: False if debug else True
+    loop_var: host
+  no_log: '{{ False if debug else True }}'

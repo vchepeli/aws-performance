@@ -5,7 +5,7 @@
     name: '*'
     state: latest
   become: yes
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
   tags: [system, packages]
 
 - name: 'Ensure SYSTEM packages installed'
@@ -15,7 +15,7 @@
     state: latest
   become: yes
   with_items: '{{ system_packages }}'
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
   tags: [system, packages]
 
 - name: 'Ensure EPEL packages installed'
@@ -25,7 +25,7 @@
     state: latest
   become: yes
   with_items: '{{ epel_packages }}'
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
   tags: [system, packages]
 
 - name: 'Ensure the NTP service is running and enabled'
@@ -66,6 +66,7 @@
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   become: yes
+  changed_when: False
   with_items:
     - { regexp: '^LANG=', line: 'LANG=en_US.utf-8' }
     - { regexp: '^LC_ALL=', line: 'LC_ALL=en_US.utf-8' }

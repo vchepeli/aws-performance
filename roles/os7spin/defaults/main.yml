@@ -7,7 +7,7 @@ host_facts:
   connection_port: 22
   connection_type: ssh
 
-oc_prefix: 'mperf-'
+oc_prefix: '{{ cloud_vm_prefix|default("mperf-") }}'
 os_cloud_name: mwqa
 os_masters_count: 2
 os_master_flavor: m1.large

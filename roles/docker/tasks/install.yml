@@ -17,7 +17,7 @@
     state: latest
   become: yes
   with_items: '{{ docker_required_packages }}'
-  no_log: False if debug else True
+  no_log: '{{ False if debug else True }}'
 
 - name: 'Install docker-ce version'
   action: '{{ ansible_pkg_mgr }}'

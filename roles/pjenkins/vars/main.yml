@@ -1,0 +1,25 @@
+---
+jenkins:
+  user:
+    name: '{{ jenkins_user_name|mandatory }}'
+    home: '{{ jenkins_user_home|mandatory }}'
+  admin:
+    username: '{{ vault_jenkins_username|default("admin") }}'
+    password: '{{ vault_jenkins_password|default("admin") }}'
+  master:
+    url: '{{ vault_jenkins_url|default("http://localhost:8080") }}'
+  slave:
+    executors: 2
+    description: 'Performance VM Slave'
+    port: 22
+    launcher: 'hudson.plugins.sshslaves.SSHLauncher'
+    labels:
+      - perf
+      - mobile
+  ssh:
+    credentials:
+      id: '{{ jenkins_prefix }}sshkey'
+      description: 'Performance VM Credentials'
+      package: 'com.cloudbees.jenkins.plugins.sshcredentials.impl'
+    key:
+      passphrase: '{{ vault_jenkins_passphrase|default("") }}'

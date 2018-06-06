@@ -7,5 +7,7 @@ epel_packages:
 system_pip_version: 9.0.0
 
 system_dns_config: /etc/resolv.conf
-system_dns_server: 8.8.8.8
+system_dns_servers:
+  - 8.8.8.8
+  - 8.8.4.4
 
