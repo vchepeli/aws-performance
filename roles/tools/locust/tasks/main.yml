@@ -18,6 +18,7 @@
     name: '{{ item }}'
     state: latest
   become: yes
+  when: ansible_os_family == 'RedHat'
   with_items: '{{ epel_packages }}'
   no_log: '{{ False if debug else True }}'
   tags: [locust, epel]

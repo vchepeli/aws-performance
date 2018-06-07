@@ -3,13 +3,17 @@
   hosts: localhost
   gather_facts: yes
   vars:
-    whoami_home: '{{ lookup("env","HOME") }}'
+    tools_owner_name: '{{ lookup("env","USER") }}'
+    tools_owner_home: '{{ lookup("env","HOME") }}'
+    whoami_home: '{{ tools_owner_home }}'
   roles:
-    - os7spin
+    - cloud/os7
   tasks:
-    - include_role: name=gatling
-    - include_role: name=jmeter
-    - include_role: name=octools
+    - include_role: name=tools/gatling
+    - include_role: name=tools/jmeter
+    - include_role: name=tools/locust
+    - include_role: name=tools/maven
+    - include_role: name=tools/oc
 
 - name: Install Performance Tooling
   hosts: masters:slaves
@@ -19,17 +23,14 @@
     tools_owner_home: '/var/lib/jenkins'
     whoami_home: '{{ lookup("env","HOME") }}'
   roles:
-    - system
-    - joracle
-    - jenkins
-    - ohmyzsh
-    - maven
-    - locust
+    - system/docker
+    - system/ohmyzsh
+    - tools/gatling
+    - tools/jmeter
+    - tools/locust
+    - tools/maven
+    - tools/oc
     - zabbix
-    - docker
-    - octools
-    - gatling
-    - jmeter
 
 - name: Add VMs to Jenkins master
   hosts: localhost

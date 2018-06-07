@@ -1,0 +1,12 @@
+---
+#TODO Found existing installation: requests 2.6.0\n\n:stderr: Cannot uninstall 'requests'.
+# It is a distutils installed project and thus we cannot accurately determine which files belong
+# to it which would lead to only a partial uninstall
+# related to PIP@10!!!, use -I or install PIP@9
+- name: 'Install {{ docker_compose_name }}'
+  pip:
+    name: '{{ docker_compose_name }}'
+    state: latest
+    extra_args: -I
+  no_log: '{{ False if debug else True }}'
+  become: yes

@@ -1,7 +1,0 @@
----
-- name: 'Install {{ docker_compose_name }}'
-  pip:
-    name: '{{ docker_compose_name }}'
-    state: latest
-  no_log: '{{ False if debug else True }}'
-  become: yes
