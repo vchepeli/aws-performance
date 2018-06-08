@@ -6,7 +6,7 @@
 {% for group in groups %}
 {% if groups[group] and group != 'all' %}
 {% for host in groups[group] %}
-{{ hostvars[host].ansible_all_ipv4_addresses|join(' ') }}    {{ hostvars[host].ansible_hostname }}
+{{ hostvars[host].ip4_private }}    {{ hostvars[host].inventory_hostname_short }}
 {% endfor %}
 {% endif %}
 {% endfor %}

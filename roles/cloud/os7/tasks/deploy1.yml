@@ -1,32 +1,37 @@
 ---
 - name: Deploy {{ prefix }}{{ item }} instance
   os_server:
-#    cloud: '{{ os_cloud_name }}'
+#    cloud: '{{ os7_cloud_name }}'
     name: '{{ prefix }}{{ item }}'
-    image: '{{ os_image_name }}'
+    image: '{{ os7_image_id }}'
     flavor: '{{ flavor }}'
-    key_name: '{{ os_key_name }}'
-    network: '{{ os_net_name_priv }}'
-    security_groups: '{{ os_security_group }}'
+    key_name: '{{ os7_sshkey_name }}'
+    network: '{{ os7_net_priv_name }}'
+    security_groups: '{{ os7_security_group }}'
     auto_ip: false
     state: present
     timeout: 200
     verify: false
-  register: os_nova_instance
+  register: os7_server_instance
 
 - name: Assign floating IP to {{ prefix }}{{ item }}
   os_floating_ip:
-#    cloud: '{{ os_cloud_name }}'
-    server: '{{ os_nova_instance.id }}'
+#    cloud: '{{ os7_cloud_name }}'
+    server: '{{ os7_server_instance.id }}'
     reuse: yes
     state: present
     wait: yes
-  register: 'os_instance_floating_ip'
+  register: os7_floating_ip
   retries: 5
-  until: os_instance_floating_ip is success
+  until: os7_floating_ip is success
 
 - name: Add {{ prefix }}{{ item }} instance to inventory
   add_host:
-    name: '{{ os_nova_instance.server.name }}'
+    name: '{{ os7_server_instance.server.name }}'
     groups: '{{ group }}'
-    ansible_host: '{{ os_instance_floating_ip.floating_ip.floating_ip_address }}'
+    ansible_host: '{{ os7_floating_ip.floating_ip.floating_ip_address }}'
+    ansible_user: "{{ host_facts.user_name }}"
+    ansible_connection: "{{ host_facts.connection_type }}"
+    ansible_port: "{{ host_facts.connection_port }}"
+    ip4_public: "{{ os7_floating_ip.floating_ip.floating_ip_address }}"
+    ip4_private: "{{ os7_server_instance.server.private_v4 }}"

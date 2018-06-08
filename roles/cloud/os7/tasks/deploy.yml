@@ -1,10 +1,10 @@
 ---
 - include_tasks: deploy1.yml
   with_sequence:
-    count={{ os_masters_count }}
+    count={{ os7_masters_count }}
   vars:
-    prefix: '{{ os_master_prefix }}'
-    flavor: '{{ os_master_flavor }}'
+    prefix: '{{ os7_master_name }}'
+    flavor: '{{ os7_master_flavor }}'
     group: 'masters'
   no_log: '{{ False if debug else True }}'
 
@@ -20,7 +20,7 @@
   lineinfile:
     dest: '{{ playbook_dir }}/hosts'
     regexp: '^{{ item }}'
-    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }}'
+    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }} ip4_public={{ hostvars[item].ip4_public }} ip4_private={{ hostvars[item].ip4_private }}'
     insertafter: '\[masters\]'
     state: present
   changed_when: False
@@ -28,10 +28,10 @@
 
 - include_tasks: deploy1.yml
   with_sequence:
-    count={{ os_slaves_count }}
+    count={{ os7_slaves_count }}
   vars:
-    prefix: '{{ os_slave_prefix }}'
-    flavor: '{{ os_slave_flavor }}'
+    prefix: '{{ os7_slave_name }}'
+    flavor: '{{ os7_slave_flavor }}'
     group: 'slaves'
   no_log: '{{ False if debug else True }}'
 
@@ -47,7 +47,7 @@
   lineinfile:
     dest: '{{ playbook_dir }}/hosts'
     regexp: '^{{ item }}'
-    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }}'
+    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }} ip4_public={{ hostvars[item].ip4_public }} ip4_private={{ hostvars[item].ip4_private }}'
     insertafter: '\[slaves\]'
     state: present
   changed_when: False

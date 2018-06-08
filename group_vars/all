@@ -4,5 +4,7 @@ user_binaries: /usr/local/bin
 
 ec2_enabled: no
 os7_enabled: yes
+#you can define global prefix for perf machines
+#cloud_vm_prefix
 
 debug: no

@@ -34,10 +34,37 @@
 - debug: msg='Downloading Oracle JDK from {{ joracle_rpm_url }}'
   when: debug
 
+#TODO get_url sometimes downloads corrupted RPMs
+#- name: 'Download latest Oracle JDK RPM'
+#  get_url:
+#    headers='Cookie:gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie'
+#    dest="{{ joracle_dir_source }}/{{ joracle_rpm_filename }}"
+#    url="{{ joracle_rpm_url }}"
+#    validate_certs="{{ joracle_rpm_validate_certs }}"
+#  register: joracle_task_rpm_download
+#  become: yes
+
 - name: 'Download latest Oracle JDK RPM'
-  get_url:
-    headers='Cookie:gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie'    dest="{{ joracle_dir_source }}/{{ joracle_rpm_filename }}"
-    url="{{ joracle_rpm_url }}"
-    validate_certs="{{ joracle_rpm_validate_certs }}"
+  shell: >
+   wget --header "Cookie:gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" {{ joracle_rpm_url }}
+   -O {{ joracle_dir_source }}/{{ joracle_rpm_filename }}
+  args:
+    warn: no # set warn=false to prevent warning
+  chaned_when: False
   register: joracle_task_rpm_download
   become: yes
+
+- name: 'Continue previous download if failed'
+  shell: >
+   wget --header "Cookie:gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" {{ joracle_rpm_url }}
+   -O {{ joracle_dir_source }}/{{ joracle_rpm_filename }}
+   --continue
+  args:
+    warn: no # set warn=false to prevent warning
+  become: yes
+  when: joracle_task_rpm_download.rc != 0
+  register: joracle_task_rpm_continue
+  retries: 10
+  until: joracle_task_rpm_continue.rc == 0
+
+

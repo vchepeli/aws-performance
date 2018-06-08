@@ -5,7 +5,14 @@
     name: 'zsh'
     state: present
   become: yes
-  tags: [ohmyzsh, install]
+  register: zsh_pkg_installed
+  tags: [ohmyzsh, packages]
+
+#TODO backup old ~/.zshrc if needed
+#- name: Backing up existing ~/.zshrc
+#  shell: if [ -f ~/.zshrc ]; then mv ~/.zshrc{,.orig}; fi
+#  when: zsh_pkg_installed is success
+#  sudo: no
 
 - name: Clone oh-my-zsh repo
   git:
@@ -13,7 +20,9 @@
     dest: '{{ tools_owner_home }}/.oh-my-zsh'
   become_user: '{{ tools_owner_name }}'
   become: yes
-  tags: [ohmyzsh, install]
+  when: zsh_pkg_installed is success
+  register: ohmyzsh_repo_cloned
+  tags: [ohmyzsh, clone]
 
 - name: Create a new zsh config
   copy:
@@ -22,6 +31,8 @@
     remote_src: yes
   become_user: '{{ tools_owner_name }}'
   become: yes
+  when: ohmyzsh_repo_cloned is success
+  register: ohmyzsh_config_created
   tags: [ohmyzsh, config]
 
 - name: Set zsh as default shell
@@ -29,4 +40,5 @@
     name: '{{ tools_owner_name }}'
     shell: /usr/bin/zsh
   become: yes
+  when: ohmyzsh_config_created is success
   tags: [ohmyzsh, config]

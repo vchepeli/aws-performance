@@ -4,7 +4,7 @@ required_vars:
   - software_name
   - bundle
 
-# TODO this vars also required
+# TODO this vars also required but system dependent
 #bundle_platform:
 #bundle_archive_ext: '.zip'
 #bundle_archive_extra_opts:
