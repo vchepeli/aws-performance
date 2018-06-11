@@ -7,7 +7,7 @@
     flavor: '{{ flavor }}'
     key_name: '{{ os7_sshkey_name }}'
     network: '{{ os7_net_priv_name }}'
-    security_groups: '{{ os7_security_group }}'
+    security_groups: '{{ os7_security_group_name }}'
     auto_ip: false
     state: present
     timeout: 200

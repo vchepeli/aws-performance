@@ -21,7 +21,9 @@ os7_net_priv_name: 'mobile-jenkins'
 os7_subnet_priv_name: '{{ os7_prefix }}subnet1-private'
 os7_router_priv_name: '{{ os7_prefix }}router1'
 
-os7_security_group: '{{ os7_prefix }}sec-group1'
+os7_security_group_name: '{{ os7_prefix }}sec-group1'
+os7_security_group_desc: 'Security group for performance testing instances'
+
 os7_security_rules:
   icmp:
     name: '{{ os7_prefix }}icmp'
