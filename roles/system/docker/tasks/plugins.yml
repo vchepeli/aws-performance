@@ -10,3 +10,4 @@
     extra_args: -I
   no_log: '{{ False if debug else True }}'
   become: yes
+  tags: [docker, plugins]

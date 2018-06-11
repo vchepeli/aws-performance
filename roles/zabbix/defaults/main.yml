@@ -1,5 +1,6 @@
 ---
 rhel_version: 7
+zabbix_package_name: zabbix-sender
 
 zabbix:
   name: zabbix-release
@@ -8,5 +9,3 @@ zabbix:
   arch: x86_64
   suffix: 1.el7.noarch
   ext: .rpm
-
-zabbix_package_name: zabbix-sender

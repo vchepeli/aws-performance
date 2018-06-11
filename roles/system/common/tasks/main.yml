@@ -6,7 +6,7 @@
     state: latest
   become: yes
   no_log: '{{ False if debug else True }}'
-  tags: [system, packages]
+  tags: [system, upgrade]
 
 - name: 'Ensure SYSTEM packages installed'
   action: '{{ ansible_pkg_mgr }}'
@@ -26,7 +26,7 @@
   become: yes
   with_items: '{{ epel_packages }}'
   no_log: '{{ False if debug else True }}'
-  tags: [system, packages]
+  tags: [system, packages, epel]
 
 - name: 'Ensure the NTP service is running and enabled'
   service:
@@ -99,10 +99,11 @@
   changed_when: False
   register: pip_curr_version
   failed_when: pip_curr_version.stdout is version_compare(system_pip_version,'<')
-  tags: [system, pip]
+  tags: [system, pip, version]
 
 - debug: var=pip_curr_version
   when: debug
+  tags: [system, pip, debug]
 
 - name: Create /etc/hosts file
   template:

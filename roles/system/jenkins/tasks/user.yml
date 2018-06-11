@@ -6,6 +6,7 @@
     shell: /bin/bash
     state: present
   become: yes
+  tags: [jenkins, user]
 
 - name: 'Add master public key to authorized keys'
   authorized_key:
@@ -15,6 +16,7 @@
   become: yes
   with_file: '{{ whoami_home }}/.ssh/ec2.jenkins.pub'
   no_log: '{{ False if debug else True }}'
+  tags: [jenkins, user]
 
 - name: 'Update authorized_keys rights'
   file: 
@@ -23,6 +25,7 @@
     mode: 0600 
     owner: '{{ jenkins.user.name }}'
   become: yes
+  tags: [jenkins, user]
 
 #TODO Check if jenkins super need root access
 #- name: Make Jenkins user sudoer

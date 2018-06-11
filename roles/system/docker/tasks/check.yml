@@ -4,6 +4,8 @@
   become: yes
   changed_when: False
   register: docker_bridge_network_addr
+  tags: [docker, check]
 
 - debug: var=docker_bridge_network_addr.stdout
   when: debug
+  tags: [docker, check]

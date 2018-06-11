@@ -7,12 +7,14 @@
     line: '{{ docker_sysconfig_options }}'
   changed_when: False
   become: yes
+  tags: [docker, config]
 
 - name: Creates directory
   file:
     path: /etc/docker
     state: directory
   become: yes
+  tags: [docker, config]
 
 - name: 'Adding insecure registry to daemon'
   template:
@@ -20,3 +22,4 @@
     dest: /etc/docker/daemon.json
     mode: 0644
   become: yes
+  tags: [docker, config]

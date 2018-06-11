@@ -41,4 +41,4 @@
     shell: /usr/bin/zsh
   become: yes
   when: ohmyzsh_config_created is success
-  tags: [ohmyzsh, config]
+  tags: [ohmyzsh, shell]

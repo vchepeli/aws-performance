@@ -6,5 +6,7 @@ ec2_enabled: no
 os7_enabled: yes
 #you can define global prefix for perf machines
 #cloud_vm_prefix
+#you can define public network in your openstack
+#cloud_net_pub_name
 
 debug: no

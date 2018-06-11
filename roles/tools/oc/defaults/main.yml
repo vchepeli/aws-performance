@@ -1,5 +1,5 @@
 ---
-octools_enabled: yes
+oc_enabled: yes
 software_name: 'oc'
 bundle:
   name: 'openshift-origin-client-tools'

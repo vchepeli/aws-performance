@@ -5,16 +5,20 @@
     return_content: yes
   register: result
   no_log: '{{ False if debug else True }}'
+  tags: [joracle, download]
 
 - name: 'Determine latest Oracle JDK download page and version'
   set_fact: latest_java_page_and_version='{{ (result.content.replace("\n","") | regex_replace(".*(/technetwork/java/javase/downloads/jdk(\d+)-downloads.*?.html).*", "http://www.oracle.com/\g<1>\n\g<2>")).split("\n") }}'
+  tags: [joracle, download]
 
 - name: 'Define download page URL based on latest Oracle JDK version'
   set_fact: download_page_url='{{ latest_java_page_and_version[0] }}'
   when: latest_java_page_and_version[1] is version_compare(joracle_version,'=')
+  tags: [joracle, download]
 
 - debug: msg='Download page URL is {{ download_page_url }}'
   when: debug
+  tags: [joracle, download]
 
 - name: 'Get latest Oracle JDK RPM url'
   uri:
@@ -22,17 +26,21 @@
     return_content: yes
   register: result
   no_log: '{{ False if debug else True }}'
+  tags: [joracle, download]
 
 - name: 'Set latest Oracle JDK RPM url'
   set_fact: joracle_rpm_url="{{ result.content|regex_search('https?://download.oracle.com/.*?/jdk-\w+-linux-' + joracle_ansible_arch_mappings[ansible_architecture] + '.rpm') }}"
+  tags: [joracle, download]
 
 - name: 'Set latest Oracle JDK versions'
   set_fact: joracle_rpm_filename='{{ joracle_rpm_url | basename }}'
             joracle_version='{{ joracle_rpm_url | basename | regex_replace("jdk-(\d+)u(\d+)-linux.*","\g<1>") }}'
             joracle_version_update='{{ joracle_rpm_url | basename|regex_replace("jdk-(\d+)u(\d+)-linux.*","\g<2>") }}'
+  tags: [joracle, download]
 
 - debug: msg='Downloading Oracle JDK from {{ joracle_rpm_url }}'
   when: debug
+  tags: [joracle, download]
 
 #TODO get_url sometimes downloads corrupted RPMs
 #- name: 'Download latest Oracle JDK RPM'
@@ -43,6 +51,7 @@
 #    validate_certs="{{ joracle_rpm_validate_certs }}"
 #  register: joracle_task_rpm_download
 #  become: yes
+#  tags: [joracle, download]
 
 - name: 'Download latest Oracle JDK RPM'
   shell: >
@@ -53,6 +62,7 @@
   chaned_when: False
   register: joracle_task_rpm_download
   become: yes
+  tags: [joracle, download]
 
 - name: 'Continue previous download if failed'
   shell: >
@@ -66,5 +76,4 @@
   register: joracle_task_rpm_continue
   retries: 10
   until: joracle_task_rpm_continue.rc == 0
-
-
+  tags: [joracle, download]

@@ -3,6 +3,7 @@
   shell: id -u -n
   changed_when: False
   register: user_name
+  tags: [docker, whoami]
 
 - when: docker_enabled
   block:
@@ -20,8 +21,9 @@
       name: docker
       state: started
       enabled: yes
-    tags: [docker, service]
     become: yes
+    tags: [docker, service]
+
   always:
   - include_tasks: 'check.yml'
     tags: [docker, check]

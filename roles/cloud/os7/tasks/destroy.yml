@@ -1,41 +1,59 @@
 ---
-- name: Destroy master Instances
+- name: Delete master instances
   os_server:
 #    cloud: "{{ os7_cloud_name }}"
     name: "{{ os7_master_name }}{{ item }}"
     state: absent
   with_sequence:
-    count={{ os7_masters_count }}
+    count={{ os7_master_count }}
+  tags: [os7, destroy]
 
-- name: Destroy slave Instances
+- name: Delete slave instances
   os_server:
 #    cloud: "{{ os7_cloud_name }}"
     name: "{{ os7_slave_name }}{{ item }}"
     state: absent
   with_sequence:
-    count={{ os7_slaves_count }}
+    count={{ os7_slave_count }}
+  tags: [os7, destroy]
 
-#TODO Delete SSH key pair
-
-#TODO Delete security group
-
-#TODO Delete floating IPS
-
-#TODO Delete router
-#- os_router:
-#    cloud: mycloud
-#    state: absent
-#    name: router1
-
-#TODO Delete a subnet
-#- os_subnet:
+- name: Delete SSH {{ os7_sshkey_name }} keypair
+  os_keypair:
 #    cloud: '{{ os7_cloud_name }}'
-#    name: net1subnet
-#    state: absent
+    name:  '{{ os7_sshkey_name }}'
+    state: absent
+  tags: [os7, destroy]
 
-#TODO Delete network
-#  os_network:
+- name: Delete {{ os7_security_group_name }} security group
+  os_security_group:
 #    cloud: '{{ os7_cloud_name }}'
-#    name: '{{ os7_net_priv_name }}'
-#    provider_network_type: vlan
-#    state: absent
+    name: '{{ os7_security_group_name }}'
+    state: absent
+  tags: [os7, destroy]
+
+#TODO Release floating IPS
+
+- name: Delete {{ os7_router_priv_name }} router
+  os_router:
+#    cloud: '{{ os7_cloud_name }}'
+    name: '{{ os7_router_priv_name }}'
+    state: absent
+  tags: [os7, destroy]
+
+- name: Delete private {{ os7_subnet_priv_name }} subnet
+  os_subnet:
+#    cloud: '{{ os7_cloud_name }}'
+    name: '{{ os7_subnet_priv_name }}'
+    state: absent
+  tags: [os7, destroy]
+
+- name: Delete private {{ os7_net_priv_name }} network
+  os_network:
+#    cloud: '{{ os7_cloud_name }}'
+    name: '{{ os7_net_priv_name }}'
+    state: absent
+  tags: [os7, destroy]
+
+- set_fact:
+    cloud_destroyed: yes
+  tags: [os7, destroy]

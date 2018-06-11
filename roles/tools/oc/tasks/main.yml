@@ -9,23 +9,23 @@
       skip: true
       paths:
         - '{{role_path}}/vars'
-  tags: [octools, vars]
+  tags: [oc, vars]
 
-- when: octools_enabled
+- when: oc_enabled
   block:
   - include_tasks: 'install.yml'
-    tags: [octools, install]
+    tags: [oc, install]
 
   - include_tasks: 'plugins.yml'
-    tags: [octools, plugins]
+    tags: [oc, plugins]
 
   - include_tasks: 'config.yml'
-    tags: [octools, config]
+    tags: [oc, config]
 
   - name: Checking installed version of OC
     shell: oc version 2>&1 | head -n1 | awk '{print $2}'
     changed_when: False
     ignore_errors: yes
-    register: octools_curr_version
-    failed_when: octools_curr_version.stdout is version_compare(bundle.version + '+' + bundle.sha, '!=')
-    tags: [octools, check]
+    register: oc_curr_version
+    failed_when: oc_curr_version.stdout is version_compare(bundle.version + '+' + bundle.sha, '!=')
+    tags: [oc, check]

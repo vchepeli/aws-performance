@@ -32,13 +32,11 @@
     stat:
       path: '{{ jmeter_installation_default_bin }}/PluginsManagerCMD.sh'
     register: plugins_manager_cmd
-    tags: [jmeter, plugins]
 
   - name: 'Fail when PluginsManagerCMD.{sh,bat} not located in {{ jmeter_installation_default_bin }}'
     fail:
       msg: 'Whoops! PluginsManagerCMD.{sh,bat} do not exist'
     when: not plugins_manager_cmd.stat.exists
-    tags: [jmeter, plugins]
 
   - name: 'Find all installed JMeter plugins'
     find:
@@ -46,7 +44,6 @@
       patterns="^jmeter-.*?\\.(?:jar)$"
       use_regex=True
     register: jmeter_installed_plugins
-    tags: [jmeter, plugins]
 
   - name: 'Install JMeter plugins'
     command: 'bin/PluginsManagerCMD.sh install {{ jmeter_plugins_set|join(",") }}'
@@ -55,7 +52,6 @@
     async: 100
     become: yes
     changed_when: jmeter_installed_plugins and jmeter_installed_plugins.matched|int == 1
-    tags: [jmeter, plugins]
 
   - name: 'Find all installed JMeter plugins'
     find:
@@ -63,10 +59,10 @@
       patterns="^jmeter-.*?\\.(?:jar)$"
       use_regex=True
     register: jmeter_installed_plugins
-    tags: [jmeter, plugins]
 
   - name: 'Fail when JMeter plugins were not installed'
     fail:
       msg: 'Whoops! Plugins do not exist in {{ jmeter_installation_default_ext }}'
     when: jmeter_installed_plugins and not jmeter_installed_plugins.matched|int > 1
-    tags: [jmeter, plugins]
+  #block
+  tags: [jmeter, plugins]

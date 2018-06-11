@@ -1,7 +1,7 @@
 ---
 - name: Create && Launch VMs
   hosts: localhost
-  gather_facts: yes
+  gather_facts: True
   vars:
     tools_owner_name: '{{ lookup("env","USER") }}'
     tools_owner_home: '{{ lookup("env","HOME") }}'
@@ -17,11 +17,14 @@
 
 - name: Install Performance Tooling
   hosts: masters:slaves
-  gather_facts: yes
+  gather_facts: '{{ hostvars["localhost"]["cloud_destroyed"]|default(False)|ternary(False, True) }}'
   vars:
     tools_owner_name: 'jenkins'
     tools_owner_home: '/var/lib/jenkins'
     whoami_home: '{{ lookup("env","HOME") }}'
+  pre_tasks:
+    - meta: end_play
+      when: 'hostvars["localhost"]["cloud_destroyed"]|default(False)'
   roles:
     - system/docker
     - system/ohmyzsh
@@ -34,10 +37,13 @@
 
 - name: Add VMs to Jenkins master
   hosts: localhost
-  gather_facts: no
+  gather_facts: cloud_destroyed|default(False)|ternary(False, True)
   vars:
     whoami_home: '{{ lookup("env","HOME") }}'
   vars_files:
     - secret.yml
+  pre_tasks:
+    - meta: end_play
+      when: cloud_destroyed|default(False)
   roles:
     - pjenkins

@@ -9,6 +9,7 @@
     enabled: '{{ item.enabled }}'
   become: yes
   with_items: '{{ docker_yum_repos }}'
+  tags: [docker, install]
 
 - name: 'Install DockerCE dependencies'
   action: '{{ ansible_pkg_mgr }}'
@@ -18,6 +19,7 @@
   become: yes
   with_items: '{{ docker_required_packages }}'
   no_log: '{{ False if debug else True }}'
+  tags: [docker, install]
 
 - name: 'Install docker-ce version'
   action: '{{ ansible_pkg_mgr }}'
@@ -25,6 +27,7 @@
     name: 'docker-ce'
     state: latest
   become: yes
+  tags: [docker, install]
 
 - name: 'Add {{ user_name.stdout }} to docker group'
   user:
@@ -34,5 +37,6 @@
     append: yes
   become: yes
   register: docker_group_add
+  tags: [docker, install]
 #  notify:
 #    - 'Kill SSH sessions'

@@ -6,3 +6,4 @@
     line: '{{ item.key }}={{ item.value }}'
   when: filename|default(None) != None
   with_items: '{{ jmeter_config_props[filename] }}'
+  tags: [jmeter, config]

@@ -4,10 +4,11 @@
   get_url:
     url: https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1804_02.qcow2
     dest: /tmp/CentOS-7-x86_64-GenericCloud-1804_02.qcow2
+  tags: [os7, image]
 
 #TODO wait until image is active
 - name: Ensure CentOS-7-x86_64-GenericCloud-1804_02 Image Exists
-  os7_image:
+  os_image:
 #    cloud: '{{ os7_cloud_name }}'
     name: '{{ os7_image_id }}'
     container_format: bare
@@ -18,6 +19,7 @@
     properties:
       cpu_arch: x86_64
     timeout: 600
-    verify: false
-    wait: yes
     state: present
+    wait: yes
+    verify: '{{ os7_validate_ssl_certs }}'
+  tags: [os7, image]

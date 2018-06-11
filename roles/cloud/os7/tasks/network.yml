@@ -6,9 +6,10 @@
 #    provider_network_type: vlan
     external: false
     shared: false
-    verify: false
     state: present
+    verify: '{{ os7_validate_ssl_certs }}'
   register: os7_network_priv
+  tags: [os7, network]
 
 - name: Create private {{ os7_subnet_priv_name }} subnet
   os_subnet:
@@ -19,20 +20,18 @@
     cidr: 192.168.1.0/24
     gateway_ip: 192.168.1.1
     enable_dhcp: yes
-    verify: false
     state: present
-    dns_nameservers:
-      - 8.8.8.8
-      - 8.8.4.4
+    verify: '{{ os7_validate_ssl_certs }}'
   register: os7_subnet_priv
+  tags: [os7, network]
 
-#TODO network ID should be added to vars
 - name: Create router for {{ os7_net_priv_name }} network
   os_router:
 #    cloud: '{{ os7_cloud_name }}'
     name: '{{ os7_router_priv_name }}'
-    network: 'c29a0c92-6721-4e83-b9b4-d1a2c7d11495'
+    network: '{{ os7_net_pub_name }}'
     interfaces:
       - '{{ os7_subnet_priv_name }}'
-    verify: false
     state: present
+    verify: '{{ os7_validate_ssl_certs }}'
+  tags: [os7, network]

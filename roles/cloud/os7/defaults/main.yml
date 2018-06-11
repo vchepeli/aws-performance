@@ -1,4 +1,6 @@
 os7_enabled: yes
+os7_validate_ssl_certs: yes
+
 #TODO add sshkey also to host_facts
 host_facts:
   user_name: centos
@@ -7,17 +9,20 @@ host_facts:
 
 os7_prefix: '{{ cloud_vm_prefix|default("mperf-") }}'
 os7_cloud_name: mwqa
-os7_masters_count: 2
+os7_master_count: 2
 os7_master_flavor: m1.large
-os7_slaves_count: 5
+os7_slave_count: 5
 os7_slave_flavor: m1.medium
 
 os7_image_id: 'd1b458f6-245d-4b62-9035-07629fbd7081'
+
 os7_master_name: '{{ os7_prefix }}master'
 os7_slave_name: '{{ os7_prefix }}slave'
 os7_sshkey_name: '{{ os7_prefix }}sshkey'
-#os7_net_priv_name: '{{ os7_prefix }}net1-private'
-os7_net_priv_name: 'mobile-jenkins'
+
+os7_net_pub_name: '{{ cloud_net_pub_name|default("10.8.240.0") }}'
+os7_net_priv_name: '{{ os7_prefix }}net1-private'
+#os7_net_priv_name: 'mobile-jenkins'
 os7_subnet_priv_name: '{{ os7_prefix }}subnet1-private'
 os7_router_priv_name: '{{ os7_prefix }}router1'
 

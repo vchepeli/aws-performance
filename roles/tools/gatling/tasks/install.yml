@@ -1,3 +1,4 @@
 ---
 - include_role:
     name: 'tools/_installer_'
+  tags: [gatling, install]

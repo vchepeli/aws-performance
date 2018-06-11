@@ -1,23 +1,25 @@
 ---
-#TODO pip install shade!!!
+- name: 'Ensure PIP package installed'
+  pip:
+    name: 'shade'
+    state: latest
+    extra_args: -I
+  become: yes
+  no_log: '{{ False if debug else True }}'
+  tags: [os7, pip]
 
 - when: os7_enabled
   block:
-
-#TODO cant ping FQDN but only IPS
-#  - include_tasks: network.yml
-#    tags: [oc7, network]
-
+  - include_tasks: network.yml
+    tags: [os7, network]
 #TODO take image from Images or download new one
 #  - include_tasks: image.yml
-#    tags: [oc7, image]
-
   - include_tasks: secgroup.yml
-    tags: [oc7, security]
-
+    tags: [os7, security]
   - include_tasks: sshkey.yml
-    tags: [oc7, sshkey]
-
+    tags: [os7, sshkey]
   - include_tasks: deploy.yml
-    tags: [oc7, deploy]
+    tags: [os7, deploy]
+  - include_tasks: destroy.yml
+    tags: [os7, never, destroy]
   # block

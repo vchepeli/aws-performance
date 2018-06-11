@@ -4,3 +4,4 @@
   become: yes
   when: not joracle_task_rpm_download is skipped
   register: joracle_task_rpm_install
+  tags: [joracle, install]

@@ -1,54 +1,112 @@
 ---
-- include_tasks: deploy1.yml
-  with_sequence:
-    count={{ os7_masters_count }}
-  vars:
-    prefix: '{{ os7_master_name }}'
+- name: Deploy master instances
+  os_server:
+#    cloud: '{{ os7_cloud_name }}'
+    name: '{{ os7_master_name }}{{ item }}'
+    image: '{{ os7_image_id }}'
     flavor: '{{ os7_master_flavor }}'
-    group: 'masters'
-  no_log: '{{ False if debug else True }}'
+    key_name: '{{ os7_sshkey_name }}'
+    network: '{{ os7_net_priv_name }}'
+    security_groups: '{{ os7_security_group_name }}'
+    auto_ip: yes
+    state: present
+    timeout: 200
+    verify: '{{ os7_validate_ssl_certs }}'
+  with_sequence:
+    count={{ os7_master_count }}
+  register: os7_master_instances
+  tags: [os7, deploy]
 
-- name: Wait for masters port 22 to be ready
+- debug: var=os7_master_instances
+  when: debug
+  tags: [os7, deploy]
+
+- name: Add master instances to inventory
+  add_host:
+    name: '{{ item.server.name }}'
+    groups: 'masters'
+    ansible_host: '{{ item.server.accessIPv4 }}'
+    ansible_user: "{{ host_facts.user_name }}"
+    ansible_connection: "{{ host_facts.connection_type }}"
+    ansible_port: "{{ host_facts.connection_port }}"
+    ipv4_public: "{{ item.server.public_v4 }}"
+    ipv4_private: "{{ item.server.private_v4 }}"
+  with_items: "{{ os7_master_instances.results }}"
+  no_log: '{{ False if debug else True }}'
+  tags: [os7, deploy]
+
+- name: Wait for master instances port {{ host_facts.connection_port }} to be ready
   wait_for:
-    port: 22
+    port: '{{ host_facts.connection_port }}'
     host: '{{ hostvars[item].ansible_host }}'
     search_regex: OpenSSH
     delay: 10
   with_items: '{{ groups["masters"] }}'
+  tags: [os7, deploy]
 
 - name: Add masters to inventory file
   lineinfile:
     dest: '{{ playbook_dir }}/hosts'
     regexp: '^{{ item }}'
-    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }} ip4_public={{ hostvars[item].ip4_public }} ip4_private={{ hostvars[item].ip4_private }}'
+    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }} ipv4_public={{ hostvars[item].ipv4_public }} ipv4_private={{ hostvars[item].ipv4_private }}'
     insertafter: '\[masters\]'
     state: present
   changed_when: False
   with_items: '{{ groups["masters"] | reverse | list }}'
+  tags: [os7, deploy]
 
-- include_tasks: deploy1.yml
-  with_sequence:
-    count={{ os7_slaves_count }}
-  vars:
-    prefix: '{{ os7_slave_name }}'
+- name: Deploy slave instances
+  os_server:
+#    cloud: '{{ os7_cloud_name }}'
+    name: '{{ os7_slave_name }}{{ item }}'
+    image: '{{ os7_image_id }}'
     flavor: '{{ os7_slave_flavor }}'
-    group: 'slaves'
-  no_log: '{{ False if debug else True }}'
+    key_name: '{{ os7_sshkey_name }}'
+    network: '{{ os7_net_priv_name }}'
+    security_groups: '{{ os7_security_group_name }}'
+    auto_ip: yes
+    state: present
+    timeout: 200
+    verify: '{{ os7_validate_ssl_certs }}'
+  with_sequence:
+    count={{ os7_slave_count }}
+  register: os7_slave_instances
+  tags: [os7, deploy]
 
-- name: Wait for slaves port 22 to be ready
+- debug: var=os7_slave_instances
+  when: debug
+  tags: [os7, deploy]
+
+- name: Add slave instances to inventory
+  add_host:
+    name: '{{ item.server.name }}'
+    groups: 'slaves'
+    ansible_host: '{{ item.server.accessIPv4 }}'
+    ansible_user: "{{ host_facts.user_name }}"
+    ansible_connection: "{{ host_facts.connection_type }}"
+    ansible_port: "{{ host_facts.connection_port }}"
+    ipv4_public: "{{ item.server.public_v4 }}"
+    ipv4_private: "{{ item.server.private_v4 }}"
+  with_items: "{{ os7_slave_instances.results }}"
+  no_log: '{{ False if debug else True }}'
+  tags: [os7, deploy]
+
+- name: Wait for slave instances port {{ host_facts.connection_port }} to be ready
   wait_for:
-    port: 22
+    port: '{{ host_facts.connection_port }}'
     host: '{{ hostvars[item].ansible_host }}'
     search_regex: OpenSSH
     delay: 10
   with_items: '{{ groups["slaves"] }}'
+  tags: [os7, deploy]
 
 - name: Add slaves to inventory file
   lineinfile:
     dest: '{{ playbook_dir }}/hosts'
     regexp: '^{{ item }}'
-    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }} ip4_public={{ hostvars[item].ip4_public }} ip4_private={{ hostvars[item].ip4_private }}'
+    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }} ipv4_public={{ hostvars[item].ipv4_public }} ipv4_private={{ hostvars[item].ipv4_private }}'
     insertafter: '\[slaves\]'
     state: present
   changed_when: False
   with_items: '{{ groups["slaves"] | reverse | list }}'
+  tags: [os7, deploy]

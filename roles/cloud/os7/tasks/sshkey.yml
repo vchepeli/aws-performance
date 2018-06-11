@@ -5,3 +5,5 @@
     name:  '{{ os7_sshkey_name }}'
     public_key_file: '{{ whoami_home }}/.ssh/ec2.centos.pub'
     state: present
+    verify: '{{ os7_validate_ssl_certs }}'
+  tags: [os7, sshkey]

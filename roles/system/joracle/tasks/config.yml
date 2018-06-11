@@ -12,3 +12,4 @@
     - { path: '{{ joracle_home_path }}/bin', exe: 'javadoc' }
   when: joracle_set_default and joracle_task_rpm_install is changed
   register: joracle_task_set_default
+  tags: [joracle, config]
