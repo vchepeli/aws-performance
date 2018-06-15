@@ -12,7 +12,7 @@
       privateKeySource: '{{ jenkins.ssh.credentials.package }}.BasicSSHUserPrivateKey.DirectEntryPrivateKeySource'
       sshKeyText: '{{ item }}'
       sshKeyPassphrase: '{{ jenkins.ssh.key.passphrase }}'
-  with_file: '{{ whoami_home }}/.ssh/ec2.jenkins'
+  with_file: '{{ local_whoami_home }}/.ssh/ec2.jenkins'
   register: result
   no_log: '{{ False if debug else True }}'
   tags: [pjenkins, config]

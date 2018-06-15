@@ -14,7 +14,7 @@
     key: '{{ item }}'
     state: present
   become: yes
-  with_file: '{{ whoami_home }}/.ssh/ec2.jenkins.pub'
+  with_file: '{{ local_whoami_home }}/.ssh/ec2.jenkins.pub'
   no_log: '{{ False if debug else True }}'
   tags: [jenkins, user]
 

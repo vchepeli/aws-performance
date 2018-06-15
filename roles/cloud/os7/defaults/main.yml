@@ -11,7 +11,7 @@ os7_prefix: '{{ cloud_vm_prefix|default("mperf-") }}'
 os7_cloud_name: mwqa
 os7_master_count: 2
 os7_master_flavor: m1.large
-os7_slave_count: 5
+os7_slave_count: 10
 os7_slave_flavor: m1.medium
 
 os7_image_id: 'd1b458f6-245d-4b62-9035-07629fbd7081'

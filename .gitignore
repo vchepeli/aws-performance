@@ -1,6 +1,7 @@
 .venv/
 .vscode/
+.idea/
 *.retry
 .password
 .openrc*
-.idea/
+hosts

@@ -9,13 +9,14 @@ jenkins:
   master:
     url: '{{ vault_jenkins_url|default("http://localhost:8080") }}'
   slave:
-    executors: 2
+    executors: 1
     description: 'Performance VM Slave'
     port: 22
     launcher: 'hudson.plugins.sshslaves.SSHLauncher'
     labels:
-      - perf
-      - mobile
+      - '{{ jenkins_prefix|regex_replace("-$") }}'
+      - centos7-x86_64
+      - ci-rhos
   ssh:
     credentials:
       id: '{{ jenkins_prefix }}sshkey'
