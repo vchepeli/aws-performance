@@ -1,7 +1,6 @@
 ---
 - name: Upload SSH {{ os7_sshkey_name }} keypair
   os_keypair:
-#    cloud: '{{ os7_cloud_name }}'
     name:  '{{ os7_sshkey_name }}'
     public_key_file: '{{ local_whoami_home }}/.ssh/ec2.centos.pub'
     state: present

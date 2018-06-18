@@ -4,4 +4,3 @@
 *.retry
 .password
 .openrc*
-hosts

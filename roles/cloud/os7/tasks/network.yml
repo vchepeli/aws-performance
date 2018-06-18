@@ -1,7 +1,6 @@
 ---
 - name: Create private {{ os7_net_priv_name }} network
   os_network:
-#    cloud: '{{ os7_cloud_name }}'
     name: '{{ os7_net_priv_name }}'
 #    provider_network_type: vlan
     external: false
@@ -13,7 +12,6 @@
 
 - name: Create private {{ os7_subnet_priv_name }} subnet
   os_subnet:
-#    cloud: '{{ os7_cloud_name }}'
     network_name: "{{ os7_network_priv.id }}"
     name: '{{ os7_subnet_priv_name }}'
     ip_version: 4
@@ -27,7 +25,6 @@
 
 - name: Create router for {{ os7_net_priv_name }} network
   os_router:
-#    cloud: '{{ os7_cloud_name }}'
     name: '{{ os7_router_priv_name }}'
     network: '{{ os7_net_pub_name }}'
     interfaces:

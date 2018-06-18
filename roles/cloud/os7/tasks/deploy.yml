@@ -1,7 +1,6 @@
 ---
 - name: Deploy master instances
   os_server:
-#    cloud: '{{ os7_cloud_name }}'
     name: '{{ os7_master_name }}{{ item }}'
     image: '{{ os7_image_id }}'
     flavor: '{{ os7_master_flavor }}'
@@ -48,16 +47,15 @@
   lineinfile:
     dest: '{{ playbook_dir }}/hosts'
     regexp: '^{{ item }}'
-    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }} ipv4_public={{ hostvars[item].ipv4_public }} ipv4_private={{ hostvars[item].ipv4_private }}'
+    line: '{{ item }} ansible_host={{ hostvars[item].ansible_host }} ipv4_public={{ hostvars[item].ipv4_public }} ipv4_private={{ hostvars[item].ipv4_private }}'
     insertafter: '\[masters\]'
     state: present
   changed_when: False
-  with_items: '{{ groups["masters"] | reverse | list }}'
+  with_items: '{{ groups["masters"] }}'
   tags: [os7, deploy]
 
 - name: Deploy slave instances
   os_server:
-#    cloud: '{{ os7_cloud_name }}'
     name: '{{ os7_slave_name }}{{ item }}'
     image: '{{ os7_image_id }}'
     flavor: '{{ os7_slave_flavor }}'
@@ -104,9 +102,9 @@
   lineinfile:
     dest: '{{ playbook_dir }}/hosts'
     regexp: '^{{ item }}'
-    line: '{{item}} ansible_host={{ hostvars[item].ansible_host }} ipv4_public={{ hostvars[item].ipv4_public }} ipv4_private={{ hostvars[item].ipv4_private }}'
+    line: '{{ item }} ansible_host={{ hostvars[item].ansible_host }} ipv4_public={{ hostvars[item].ipv4_public }} ipv4_private={{ hostvars[item].ipv4_private }}'
     insertafter: '\[slaves\]'
     state: present
   changed_when: False
-  with_items: '{{ groups["slaves"] | reverse | list }}'
+  with_items: '{{ groups["slaves"] }}'
   tags: [os7, deploy]

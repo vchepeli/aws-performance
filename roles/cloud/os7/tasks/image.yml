@@ -9,7 +9,6 @@
 #TODO wait until image is active
 - name: Ensure CentOS-7-x86_64-GenericCloud-1804_02 Image Exists
   os_image:
-#    cloud: '{{ os7_cloud_name }}'
     name: '{{ os7_image_id }}'
     container_format: bare
     disk_format: qcow2

@@ -24,7 +24,7 @@
     local_whoami_home: '{{ lookup("env","HOME") }}'
   pre_tasks:
     - meta: end_play
-      when: 'hostvars["localhost"]["cloud_destroyed"]|default(False)'
+      when: hostvars["localhost"]["cloud_destroyed"]|default(False)
   roles:
     - system/docker
     - system/ohmyzsh
@@ -34,24 +34,15 @@
     - tools/maven
     - tools/oc
     - zabbix
-
-- name: Copy SSH key to master VMs
-  hosts: masters
-  gather_facts: '{{ hostvars["localhost"]["cloud_destroyed"]|default(False)|ternary(False, True) }}'
-  vars:
-    tools_owner_name: 'jenkins'
-    tools_owner_home: '/var/lib/jenkins'
-    local_whoami_home: '{{ lookup("env","HOME") }}'
-  tasks:
-  - copy:
-      src: '{{ local_whoami_home }}/.ssh/ec2.jenkins'
-      dest: '{{ tools_owner_home }}/.ssh/id_rsa'
-      mode: 0600
-      remote_src: no
-      validate: 'ssh -i %s -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -T {{ tools_owner_name }}@{{ cloud_vm_prefix|default("mperf-") }}slave1'
-    become: yes
-    become_user: '{{ tools_owner_name }}'
-    when: 'hostvars["localhost"]["cloud_destroyed"]|default(False)'
+  post_tasks:
+    - copy:
+        src: '{{ local_whoami_home }}/.ssh/ec2.jenkins'
+        dest: '{{ tools_owner_home }}/.ssh/id_rsa'
+        mode: 0600
+        remote_src: no
+      become: yes
+      become_user: '{{ tools_owner_name }}'
+      when: inventory_hostname_short in groups["masters"]
 
 - name: Add VMs to Jenkins master
   hosts: localhost

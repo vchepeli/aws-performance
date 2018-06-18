@@ -20,3 +20,13 @@
   become: yes
   changed_when: False
   tags: [jenkins, limits]
+
+- name: 'Create {{ jenkins.user.home }}/.ssh/config for Jenkins'
+  template:
+    src: sshconfig.j2
+    dest: '{{ jenkins.user.home }}/.ssh/config'
+    mode: 0600
+  become: yes
+  become_user: '{{ jenkins.user.name }}'
+
+  tags: [jenkins, sshconfig]

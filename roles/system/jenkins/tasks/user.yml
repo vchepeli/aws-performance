@@ -22,9 +22,9 @@
   file: 
     path: '{{ jenkins.user.home }}/.ssh/authorized_keys'
     state: file
-    mode: 0600 
-    owner: '{{ jenkins.user.name }}'
+    mode: 0600
   become: yes
+  become_user: '{{ jenkins.user.name }}'
   tags: [jenkins, user]
 
 #TODO Check if jenkins super need root access
