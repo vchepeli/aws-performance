@@ -16,39 +16,7 @@
   with_file: '{{ local_whoami_home }}/.ssh/ec2.jenkins'
   register: result
   no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
-
-- name: 'Check existing Master nodes'
-  jenkins_api:
-    jenkins_url: '{{ jenkins.master.url }}'
-    username: '{{ jenkins.admin.username }}'
-    password: '{{ jenkins.admin.password }}'
-    command: node_exists
-    args: '{{ host }}'
-  with_items: '{{ groups["masters"] }}'
-  loop_control:
-    loop_var: host
-  register: jenkins_existed_masters
-  no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
-
-- debug: var=jenkins_existed_masters
-  when: debug
-  tags: [pjenkins, config]
-
-- name: 'Delete existing Master nodes'
-  jenkins_api:
-    jenkins_url: '{{ jenkins.master.url }}'
-    username: '{{ jenkins.admin.username }}'
-    password: '{{ jenkins.admin.password }}'
-    command: delete_node
-    args: '{{ master.host }}'
-  when: master.node_exists
-  with_items: '{{ jenkins_existed_masters.results }}'
-  loop_control:
-    loop_var: master
-  no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
+  tags: [pjenkins, create, sshkey]
 
 - name: 'Create new Master nodes'
   jenkins_api:
@@ -72,39 +40,7 @@
   loop_control:
     loop_var: host
   no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
-
-- name: 'Check existing Slave nodes'
-  jenkins_api:
-    jenkins_url: '{{ jenkins.master.url }}'
-    username: '{{ jenkins.admin.username }}'
-    password: '{{ jenkins.admin.password }}'
-    command: node_exists
-    args: '{{ host }}'
-  with_items: '{{ groups["slaves"] }}'
-  loop_control:
-    loop_var: host
-  register: jenkins_existed_slaves
-  no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
-
-- debug: var=jenkins_existed_slaves
-  when: debug
-  tags: [pjenkins, config]
-
-- name: 'Delete existing Slave nodes'
-  jenkins_api:
-    jenkins_url: '{{ jenkins.master.url }}'
-    username: '{{ jenkins.admin.username }}'
-    password: '{{ jenkins.admin.password }}'
-    command: delete_node
-    args: '{{ slave.host }}'
-  when: slave.node_exists
-  with_items: '{{ jenkins_existed_slaves.results }}'
-  loop_control:
-    loop_var: slave
-  no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
+  tags: [pjenkins, create, masters]
 
 - name: 'Create new Slave nodes'
   jenkins_api:
@@ -128,4 +64,4 @@
   loop_control:
     loop_var: host
   no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
+  tags: [pjenkins, create, slaves]

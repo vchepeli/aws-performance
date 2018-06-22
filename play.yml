@@ -46,13 +46,10 @@
 
 - name: Add VMs to Jenkins master
   hosts: localhost
-  gather_facts: cloud_destroyed|default(False)|ternary(False, True)
+  gather_facts: no
   vars:
     local_whoami_home: '{{ lookup("env","HOME") }}'
   vars_files:
     - secret.yml
-  pre_tasks:
-    - meta: end_play
-      when: cloud_destroyed|default(False)
   roles:
     - pjenkins

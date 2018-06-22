@@ -1,16 +1,16 @@
 [masters]
-mperf-master2 ansible_host=10.8.248.167 ipv4_public=10.8.248.167 ipv4_private=192.168.1.11
-mperf-master1 ansible_host=10.8.249.174 ipv4_public=10.8.249.174 ipv4_private=192.168.1.9
+mperf-master2 ansible_host=10.8.251.175 ipv4_public=10.8.251.175 ipv4_private=192.168.1.8
+mperf-master1 ansible_host=10.8.247.188 ipv4_public=10.8.247.188 ipv4_private=192.168.1.14
 
 [slaves]
-mperf-slave10 ansible_host=10.8.250.238 ipv4_public=10.8.250.238 ipv4_private=192.168.1.14
-mperf-slave9 ansible_host=10.8.251.61 ipv4_public=10.8.251.61 ipv4_private=192.168.1.20
-mperf-slave8 ansible_host=10.8.251.20 ipv4_public=10.8.251.20 ipv4_private=192.168.1.23
-mperf-slave7 ansible_host=10.8.241.78 ipv4_public=10.8.241.78 ipv4_private=192.168.1.17
-mperf-slave6 ansible_host=10.8.252.0 ipv4_public=10.8.252.0 ipv4_private=192.168.1.16
-mperf-slave5 ansible_host=10.8.251.252 ipv4_public=10.8.251.252 ipv4_private=192.168.1.10
-mperf-slave4 ansible_host=10.8.251.234 ipv4_public=10.8.251.234 ipv4_private=192.168.1.15
-mperf-slave3 ansible_host=10.8.251.241 ipv4_public=10.8.251.241 ipv4_private=192.168.1.6
-mperf-slave2 ansible_host=10.8.247.84 ipv4_public=10.8.247.84 ipv4_private=192.168.1.12
-mperf-slave1 ansible_host=10.8.251.228 ipv4_public=10.8.251.228 ipv4_private=192.168.1.3
+mperf-slave10 ansible_host=10.8.249.91 ipv4_public=10.8.249.91 ipv4_private=192.168.1.19
+mperf-slave9 ansible_host=10.8.244.8 ipv4_public=10.8.244.8 ipv4_private=192.168.1.13
+mperf-slave8 ansible_host=10.8.242.163 ipv4_public=10.8.242.163 ipv4_private=192.168.1.16
+mperf-slave7 ansible_host=10.8.250.128 ipv4_public=10.8.250.128 ipv4_private=192.168.1.21
+mperf-slave6 ansible_host=10.8.245.44 ipv4_public=10.8.245.44 ipv4_private=192.168.1.20
+mperf-slave5 ansible_host=10.8.251.236 ipv4_public=10.8.251.236 ipv4_private=192.168.1.17
+mperf-slave4 ansible_host=10.8.245.51 ipv4_public=10.8.245.51 ipv4_private=192.168.1.9
+mperf-slave3 ansible_host=10.8.251.210 ipv4_public=10.8.251.210 ipv4_private=192.168.1.11
+mperf-slave2 ansible_host=10.8.251.201 ipv4_public=10.8.251.201 ipv4_private=192.168.1.15
+mperf-slave1 ansible_host=10.8.251.80 ipv4_public=10.8.251.80 ipv4_private=192.168.1.5
 

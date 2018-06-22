@@ -59,7 +59,7 @@
    -O {{ joracle_dir_source }}/{{ joracle_rpm_filename }}
   args:
     warn: no # set warn=false to prevent warning
-  chaned_when: False
+  changed_when: False
   register: joracle_task_rpm_download
   become: yes
   tags: [joracle, download]

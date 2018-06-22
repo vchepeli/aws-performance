@@ -1,0 +1,65 @@
+---
+- name: 'Find existing Master nodes'
+  jenkins_api:
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
+    command: node_exists
+    args: '{{ host }}'
+  with_items: '{{ groups["masters"] }}'
+  loop_control:
+    loop_var: host
+  register: jenkins_existed_masters
+  no_log: '{{ False if debug else True }}'
+  tags: [pjenkins, destroy, masters]
+
+- debug: var=jenkins_existed_masters
+  when: debug
+  tags: [pjenkins, destroy, masters]
+
+- name: 'Delete existing Master nodes'
+  jenkins_api:
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
+    command: delete_node
+    args: '{{ master.host }}'
+  when: master.node_exists
+  with_items: '{{ jenkins_existed_masters.results }}'
+  loop_control:
+    loop_var: master
+  no_log: '{{ False if debug else True }}'
+  tags: [pjenkins, destroy, masters]
+
+- name: 'Find existing Slave nodes'
+  jenkins_api:
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
+    command: node_exists
+    args: '{{ host }}'
+  with_items: '{{ groups["slaves"] }}'
+  loop_control:
+    loop_var: host
+  register: jenkins_existed_slaves
+  no_log: '{{ False if debug else True }}'
+  tags: [pjenkins, destroy, slaves]
+
+- debug: var=jenkins_existed_slaves
+  when: debug
+  tags: [pjenkins, destroy, slaves]
+
+- name: 'Delete existing Slave nodes'
+  jenkins_api:
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
+    command: delete_node
+    args: '{{ slave.host }}'
+  when: slave.node_exists
+  with_items: '{{ jenkins_existed_slaves.results }}'
+  loop_control:
+    loop_var: slave
+  no_log: '{{ False if debug else True }}'
+  tags: [pjenkins, destroy, slaves]
+

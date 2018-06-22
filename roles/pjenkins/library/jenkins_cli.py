@@ -18,8 +18,7 @@ class MultiRegex(object):
 
   def _sub(self, mo):
     '''
-    determine which partial regex matched, and
-    dispatch on self accordingly.
+    determine which partial regex matched, and dispatch on self accordingly
     '''
     for k, v in mo.groupdict().iteritems():
       if v:
@@ -37,11 +36,8 @@ class ParenthesesRegex(MultiRegex):
     r'(?P<right>^\s*})'
   )
 
-  def left(self, mo):
-    return mo.group() + '{'
-
+  left = lambda self, mo: mo.group() + '{'
   right = lambda self, mo: mo.group() + '}'
-
 
 def _render_create_creds_groovy(kwargs):
   with open(kwargs['groovyScript'], 'r') as myfile:

@@ -18,7 +18,7 @@ os7_image_id: 'd1b458f6-245d-4b62-9035-07629fbd7081'
 
 os7_master_name: '{{ os7_prefix }}master'
 os7_slave_name: '{{ os7_prefix }}slave'
-os7_sshkey_name: '{{ os7_prefix }}sshkey'
+os7_sshkey_name: '{{ os7_prefix }}sshkey1'
 
 os7_net_pub_name: '{{ cloud_net_pub_name|default("10.8.240.0") }}'
 os7_net_priv_name: '{{ os7_prefix }}net1-private'
@@ -59,21 +59,21 @@ os7_security_rules:
     port_range_max: 5433
     remote_ip_prefix: 0.0.0.0/0
   http:
-    name: '{{ os7_prefix }}web-def'
+    name: '{{ os7_prefix }}web1'
     description: Allow HTTP access
     proto: tcp
     port_range_min: 80
     port_range_max: 80
     remote_ip_prefix: 0.0.0.0/0
   https:
-    name: '{{ os7_prefix }}web-ssl'
+    name: '{{ os7_prefix }}web2'
     description: Allow HTTPs access
     proto: tcp
     port_range_min: 443
     port_range_max: 443
     remote_ip_prefix: 0.0.0.0/0
   jboss:
-    name: '{{ os7_prefix }}web-dev'
+    name: '{{ os7_prefix }}web3'
     description: Allow JBoss access
     proto: tcp
     port_range_min: 8080

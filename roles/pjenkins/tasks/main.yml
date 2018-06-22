@@ -8,5 +8,8 @@
   become: yes
   tags: [pjenkins, install]
 
-- include_tasks: config.yml
-  tags: [pjenkins, config]
+- include_tasks: 'delete.yml'
+  tags: [pjenkins, destroy]
+
+- include_tasks: 'create.yml'
+  tags: [pjenkins, create]
