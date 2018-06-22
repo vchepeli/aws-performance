@@ -5,6 +5,7 @@
     username: '{{ jenkins.admin.username }}'
     password: '{{ jenkins.admin.password }}'
     kwargs:
+      groovyScript: '{{role_path}}/library/scripts/create_credentials.xgroovy'
       credentialsId: '{{ jenkins.ssh.credentials.id }}'
       userName: '{{ jenkins.user.name }}'
       description: '{{ jenkins.ssh.credentials.description }}'
@@ -35,24 +36,6 @@
   when: debug
   tags: [pjenkins, config]
 
-- name: 'Check existing Slave nodes'
-  jenkins_api:
-    jenkins_url: '{{ jenkins.master.url }}'
-    username: '{{ jenkins.admin.username }}'
-    password: '{{ jenkins.admin.password }}'
-    command: node_exists
-    args: '{{ host }}'
-  with_items: '{{ groups["slaves"] }}'
-  loop_control:
-    loop_var: host
-  register: jenkins_existed_slaves
-  no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
-
-- debug: var=jenkins_existed_slaves
-  when: debug
-  tags: [pjenkins, config]
-
 - name: 'Delete existing Master nodes'
   jenkins_api:
     jenkins_url: '{{ jenkins.master.url }}'
@@ -64,20 +47,6 @@
   with_items: '{{ jenkins_existed_masters.results }}'
   loop_control:
     loop_var: master
-  no_log: '{{ False if debug else True }}'
-  tags: [pjenkins, config]
-
-- name: 'Delete existing Slave nodes'
-  jenkins_api:
-    jenkins_url: '{{ jenkins.master.url }}'
-    username: '{{ jenkins.admin.username }}'
-    password: '{{ jenkins.admin.password }}'
-    command: delete_node
-    args: '{{ slave.host }}'
-  when: slave.node_exists
-  with_items: '{{ jenkins_existed_slaves.results }}'
-  loop_control:
-    loop_var: slave
   no_log: '{{ False if debug else True }}'
   tags: [pjenkins, config]
 
@@ -102,6 +71,38 @@
   with_items: '{{ groups["masters"] }}'
   loop_control:
     loop_var: host
+  no_log: '{{ False if debug else True }}'
+  tags: [pjenkins, config]
+
+- name: 'Check existing Slave nodes'
+  jenkins_api:
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
+    command: node_exists
+    args: '{{ host }}'
+  with_items: '{{ groups["slaves"] }}'
+  loop_control:
+    loop_var: host
+  register: jenkins_existed_slaves
+  no_log: '{{ False if debug else True }}'
+  tags: [pjenkins, config]
+
+- debug: var=jenkins_existed_slaves
+  when: debug
+  tags: [pjenkins, config]
+
+- name: 'Delete existing Slave nodes'
+  jenkins_api:
+    jenkins_url: '{{ jenkins.master.url }}'
+    username: '{{ jenkins.admin.username }}'
+    password: '{{ jenkins.admin.password }}'
+    command: delete_node
+    args: '{{ slave.host }}'
+  when: slave.node_exists
+  with_items: '{{ jenkins_existed_slaves.results }}'
+  loop_control:
+    loop_var: slave
   no_log: '{{ False if debug else True }}'
   tags: [pjenkins, config]
 

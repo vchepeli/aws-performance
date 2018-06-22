@@ -2,55 +2,53 @@
 import jenkins
 from ansible.module_utils.basic import *
 
-create_credential_groovy = u"""
-import jenkins.*;
-import jenkins.model.*;
-import hudson.*;
-import hudson.model.*;
+#http://code.activestate.com/recipes/576710-multi-regex-single-pass-replace-of-multiple-regexe/
+class MultiRegex(object):
+  flags = re.MULTILINE
+  regexes = ()
 
-import com.cloudbees.plugins.credentials.domains.Domain;
-import com.cloudbees.plugins.credentials.CredentialsScope;
+  def __init__(self):
+    '''
+    compile a disjunction of regexes, in order
+    '''
+    self._regex = re.compile("|".join(self.regexes), self.flags)
 
-domain = Domain.global()
-store = Jenkins.instance.getExtensionList(
-  'com.cloudbees.plugins.credentials.SystemCredentialsProvider'
-)[0].getStore()
+  def sub(self, s):
+    return self._regex.sub(self._sub, s)
 
-credsNew = new {userPrivateKey}(
-  CredentialsScope.GLOBAL, '{credentialsId}',
-  '{userName}',
-  new {privateKeySource}('''{sshKeyText}'''),
-  '{sshKeyPassphrase}',
-  '{description}'
-)
+  def _sub(self, mo):
+    '''
+    determine which partial regex matched, and
+    dispatch on self accordingly.
+    '''
+    for k, v in mo.groupdict().iteritems():
+      if v:
+        sub = getattr(self, k)
+        if callable(sub):
+          return sub(mo)
+        return sub
+    raise AttributeError, \
+      'nothing captured, matching sub-regex could not be identified'
 
-creds = com.cloudbees.plugins.credentials.CredentialsProvider.lookupCredentials(
-  {userPrivateKey}.class, Jenkins.instance
-);
-updated = false;
 
-for (credsCurr in creds) {{
-  // Comparison does not compare passwords but identity.
-  if (credsNew == credsCurr) {{
-    store.removeCredentials(domain, credsCurr);
-    ret = store.addCredentials(domain, credsNew)
-    updated = true;
-    println('OVERWRITTEN');
-    break;
-  }}
-}}
+class ParenthesesRegex(MultiRegex):
+  regexes = (
+    r'(?P<left>\s+{$)',
+    r'(?P<right>^\s*})'
+  )
 
-if (!updated) {{
-  ret = store.addCredentials(domain, credsNew)
-  if (ret) {{
-    println('CREATED');
-  }} else {{
-    println('FAILED');
-  }}
-}}
-"""  # noqa
+  def left(self, mo):
+    return mo.group() + '{'
+
+  right = lambda self, mo: mo.group() + '}'
+
 
 def _render_create_creds_groovy(kwargs):
+  with open(kwargs['groovyScript'], 'r') as myfile:
+    groovyScriptText = myfile.read()
+
+  create_credential_groovy = ParenthesesRegex().sub(groovyScriptText)
+
   return create_credential_groovy.format(
     credentialsId=kwargs['credentialsId'],
     userName=kwargs['userName'],
@@ -60,6 +58,7 @@ def _render_create_creds_groovy(kwargs):
     sshKeyText=kwargs['sshKeyText'],
     sshKeyPassphrase=kwargs['sshKeyPassphrase']
   )
+
 
 def _jenkins_cli(jenkins_url=None, username=None, password=None, **kwargs):
   result = {
